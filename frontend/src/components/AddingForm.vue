@@ -3,19 +3,30 @@ import { ref } from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
-
+import $ from 'jquery';
 const date = ref(null);
 const eventName = ref('');
 
-const categories = ref([
+let categories = ref([
 {name: "Calendar 1", key: "A"},
 {name: "Calendar 2", key: "B"},
 {name: "Calendar 3", key: "C"},
 {name: "Calendar 4", key: "D"}
 ]);
 
-const selectedCategories = ref(['']);
+const selectedCategories = ref([]);
 
+$.ajax({
+    url:'http://localhost:8000/calendars',
+    type:'GET',
+    success:function(val) {
+        categories=ref([
+            {name:val[0], key:"A"},
+            {name:val[1], key:"B"},
+            {name:val[2], key:"C"},
+        ])
+    }
+})
 </script>
 
 <template>
@@ -34,7 +45,7 @@ const selectedCategories = ref(['']);
                 </div>
             </div> 
         </div>
-
+        <div>{{ selectedCategories }}</div>
         <button class="submit" type="submit">Add item</button>
     </form>
 </template>
