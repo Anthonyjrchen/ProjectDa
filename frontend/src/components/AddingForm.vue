@@ -7,12 +7,7 @@ import $ from 'jquery';
 const date = ref(null);
 const eventName = ref('');
 
-let categories = ref([
-{name: "Calendar 1", key: "A"},
-{name: "Calendar 2", key: "B"},
-{name: "Calendar 3", key: "C"},
-{name: "Calendar 4", key: "D"}
-]);
+let categories = ref([]);
 
 const selectedCategories = ref([]);
 
@@ -20,11 +15,16 @@ $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
     success:function(val) {
-        categories=ref([
-            {name:val[0], key:"A"},
-            {name:val[1], key:"B"},
-            {name:val[2], key:"C"},
-        ])
+        // categories=ref([
+        //     {name:val[0], key:"A"},
+        //     {name:val[1], key:"B"},
+        //     {name:val[2], key:"C"},
+        // ])
+        categories.value = [
+            { name: val[0], key: "A" },
+            { name: val[1], key: "B" },
+            { name: val[2], key: "C" },
+    ];
     }
 })
 </script>
@@ -38,7 +38,7 @@ $.ajax({
         <input type="text" v-model="eventName" required />
         <h2>Choose which calendar/s</h2>
         <div class="card flex justify-center">
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4" id="calendarList">
                 <div v-for="category of categories" :key="category.key" class="flex items-center gap-2">
                     <Checkbox class="calendarCheckbox" v-model="selectedCategories" :inputId="category.key" name="category" :value="category.name" />
                     <label :for="category.key">{{ category.name }}</label>
