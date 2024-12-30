@@ -30,6 +30,7 @@ function formSubmit(e){
     // console.log(date.value.toLocaleDateString())
     const formattedDate = date.value.toISOString().split('T')[0];
     e.preventDefault();
+    console.log("Event Date is " + formattedDate);
     $.ajax({
         url: 'http://127.0.0.1:8000/add',
         type: 'post',
@@ -69,9 +70,12 @@ function formSubmit(e){
         <h2>Trial Event</h2>
         <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
         
-        <h2>Choose which calendar/s</h2>
-        <div class="card flex justify-center">
-            <div class="flex flex-col gap-4" id="calendarList">
+        <h2 class="mt-2">Name of event</h2>
+        <input type="text" name="eventName" v-model="eventName" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
+        
+        <h2 class="mt-2">Choose which calendar/s</h2>
+        <div class="card flex justify-left">
+            <div class="flex flex-col gap-2" id="calendarList">
                 <div v-for="calendar of calendars" :key="calendar.key" class="flex items-center gap-2">
                     <Checkbox class="calendarCheckbox" v-model="selectedCalendars" :inputId="calendar.key" name="calendar" :value="calendar.name" />
                     <label :for="calendar.key">{{ calendar.name }}</label>

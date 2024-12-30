@@ -1,0 +1,4 @@
+npm install -D tailwindcss@latest postcss@latest autoprefixer@latest
+npm instal jquery
+npm install primevue
+npm install primevue @primevue/themes
