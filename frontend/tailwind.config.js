@@ -3,7 +3,11 @@ export default {
   purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'dark-white': '#52525b', // Very light gray, off-white
+      },
+    },
   },
   plugins: [],
 }
