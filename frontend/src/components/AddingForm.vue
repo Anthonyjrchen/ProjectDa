@@ -50,12 +50,17 @@ function formSubmit(e){
 </script>
 
 <template>
+    <head>
+        <link href="./output.css" rel="stylesheet">
+    </head>
     <form id="eventForm" v-on:submit.prevent="formSubmit">
         <h1>Adding</h1>
         <h2>Date of event</h2>
         <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
         <h2>Name of event</h2>
         <input type="text" name="eventName" v-model="eventName" required />
+        <input type="text" v-model="eventName" required />
+        
         <h2>Choose which calendar/s</h2>
         <div class="card flex justify-center">
             <div class="flex flex-col gap-4" id="calendarList">
