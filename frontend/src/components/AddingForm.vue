@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import VueDatePicker from '@vuepic/vue-datepicker';
+import DatePicker from 'primevue/datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
 import $ from 'jquery';
@@ -20,22 +20,43 @@ $.ajax({
         //     {name:val[1], key:"B"},
         //     {name:val[2], key:"C"},
         // ])
-        categories.value = [
-            { name: val[0], key: "A" },
-            { name: val[1], key: "B" },
-            { name: val[2], key: "C" },
-    ];
+        categories.value = [];
+        for (let i = 0; i < val.length; i++) {
+            categories.value.push({name:val[i], key:i})
+        }
+    console.log(val)
     }
 })
+
+// document.getElementById("eventForm").addEventListener("submit", formSubmit(e));
+
+function formSubmit(e){
+    // console.log(date.value.toLocaleDateString())
+    const formattedDate = date.value.toISOString().split('T')[0];
+    e.preventDefault();
+    $.ajax({
+        url: 'http://127.0.0.1:8000/add',
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            date: formattedDate,
+            eventName: eventName.value,
+            categories: selectedCategories.value,
+        }),
+        success:function(e){
+            console.log(e)
+        }
+    });
+};
 </script>
 
 <template>
-    <form>
+    <form id="eventForm" v-on:submit.prevent="formSubmit">
         <h1>Adding</h1>
         <h2>Date of event</h2>
-        <VueDatePicker v-model="date" class="datepicker"></VueDatePicker>
+        <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
         <h2>Name of event</h2>
-        <input type="text" v-model="eventName" required />
+        <input type="text" name="eventName" v-model="eventName" required />
         <h2>Choose which calendar/s</h2>
         <div class="card flex justify-center">
             <div class="flex flex-col gap-4" id="calendarList">
