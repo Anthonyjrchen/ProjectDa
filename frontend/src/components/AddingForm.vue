@@ -19,14 +19,20 @@ const selectedCategories = ref(['']);
 </script>
 
 <template>
+    <head>
+        <link href="./output.css" rel="stylesheet">
+    </head>
     <form>
-        <h1>Adding</h1>
+        <h1 class="text-3xl font-bold">Adding</h1>
+        
         <h2>Date of event</h2>
-        <VueDatePicker v-model="date" class="datepicker"></VueDatePicker>
+        <VueDatePicker v-model="date" class="!w-[150px] border border-gray-300 rounded-md bg-blue-100 text-blue-700 focus:outline-none focus:ring-2 focus:ring-green-500"></VueDatePicker>
+        
         <h2>Name of event</h2>
         <input type="text" v-model="eventName" required />
+        
         <h2>Choose which calendar/s</h2>
-        <div class="card flex justify-center">
+        <div class="card flex justify-eft">
             <div class="flex flex-col gap-4">
                 <div v-for="category of categories" :key="category.key" class="flex items-center gap-2">
                     <Checkbox class="calendarCheckbox" v-model="selectedCategories" :inputId="category.key" name="category" :value="category.name" />
