@@ -1,21 +1,53 @@
 <script setup>
 import { ref } from 'vue';
-import VueDatePicker from '@vuepic/vue-datepicker';
+import DatePicker from 'primevue/datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
-
+import $ from 'jquery';
 const date = ref(null);
 const eventName = ref('');
 
-const categories = ref([
-{name: "Calendar 1", key: "A"},
-{name: "Calendar 2", key: "B"},
-{name: "Calendar 3", key: "C"},
-{name: "Calendar 4", key: "D"}
-]);
+let categories = ref([]);
 
-const selectedCategories = ref(['']);
+const selectedCategories = ref([]);
 
+$.ajax({
+    url:'http://localhost:8000/calendars',
+    type:'GET',
+    success:function(val) {
+        // categories=ref([
+        //     {name:val[0], key:"A"},
+        //     {name:val[1], key:"B"},
+        //     {name:val[2], key:"C"},
+        // ])
+        categories.value = [];
+        for (let i = 0; i < val.length; i++) {
+            categories.value.push({name:val[i], key:i})
+        }
+    console.log(val)
+    }
+})
+
+// document.getElementById("eventForm").addEventListener("submit", formSubmit(e));
+
+function formSubmit(e){
+    // console.log(date.value.toLocaleDateString())
+    const formattedDate = date.value.toISOString().split('T')[0];
+    e.preventDefault();
+    $.ajax({
+        url: 'http://127.0.0.1:8000/add',
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            date: formattedDate,
+            eventName: eventName.value,
+            categories: selectedCategories.value,
+        }),
+        success:function(e){
+            console.log(e)
+        }
+    });
+};
 </script>
 
 <template>
@@ -25,22 +57,24 @@ const selectedCategories = ref(['']);
     <form>
         <h1 class="text-3xl font-bold">Adding</h1>
         
+    <form id="eventForm" v-on:submit.prevent="formSubmit">
+        <h1>Adding</h1>
         <h2>Date of event</h2>
-        <VueDatePicker v-model="date" class="!w-[150px] border border-gray-300 rounded-md bg-blue-100 text-blue-700 focus:outline-none focus:ring-2 focus:ring-green-500"></VueDatePicker>
-        
+        <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
         <h2>Name of event</h2>
+        <input type="text" name="eventName" v-model="eventName" required />
         <input type="text" v-model="eventName" required />
         
         <h2>Choose which calendar/s</h2>
-        <div class="card flex justify-eft">
-            <div class="flex flex-col gap-4">
+        <div class="card flex justify-center">
+            <div class="flex flex-col gap-4" id="calendarList">
                 <div v-for="category of categories" :key="category.key" class="flex items-center gap-2">
                     <Checkbox class="calendarCheckbox" v-model="selectedCategories" :inputId="category.key" name="category" :value="category.name" />
                     <label :for="category.key">{{ category.name }}</label>
                 </div>
             </div> 
         </div>
-
+        <div>{{ selectedCategories }}</div>
         <button class="submit" type="submit">Add item</button>
     </form>
 </template>
