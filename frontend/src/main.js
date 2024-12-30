@@ -7,7 +7,8 @@ import router from './router'
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 const app = createApp(App)
-
+app.config.errorHandler = () => null;
+app.config.warnHandler = () => null;
 app.use(router)
 app.use(PrimeVue, {
     theme: {

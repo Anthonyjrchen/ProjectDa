@@ -29,6 +29,7 @@ function formSubmit(e){
     // console.log(date.value.toLocaleDateString())
     const formattedDate = date.value.toISOString().split('T')[0];
     e.preventDefault();
+    console.log("Event Date is " + formattedDate);
     $.ajax({
         url: 'http://127.0.0.1:8000/add',
         type: 'post',

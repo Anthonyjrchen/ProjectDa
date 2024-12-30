@@ -42,8 +42,8 @@ months2 = {
 
 def calculate_dates(in_year,in_month,in_day):
     return_dates = {}
-    month = months[in_month]
-    date = datetime.date(int(in_year),int(month), int(in_day))
+    # month = months[in_month]
+    date = datetime.date(int(in_year),int(in_month), int(in_day))
     date1 = shiftDates(date - datetime.timedelta(days=121))
     date2 = shiftDates(date - datetime.timedelta(days=85))
     date3 = shiftDates(date - datetime.timedelta(days=61))

@@ -80,12 +80,19 @@ async def add(userEvent:EventData):
             invalidCalendars.append(calendar)
     if invalidCalendars:
         return {"error":invalidCalendars}
-
-    inputEventDates(string_dates)
-
-    # create and add event to every calendar
+    splitDate = userEvent.date.split("-")
+    inputEventDates(calc_dates(splitDate[0],splitDate[1],splitDate[2])) #fills the global eventDict variable with events and their due/reminder dates
+    eventDictKeys = eventDict.keys()
+    #for each valid calendar, traverse eventDict and add events and event reminders
     for calendar in validCalendars:
-        addEvent(calendarDict[calendar],userEvent.eventName, userEvent.date)
+        for eventKey in eventDictKeys:
+            eventDates = eventDict[eventKey]
+            addEvent(calendarDict[calendar],eventKey,eventDates.pop(0)) #add due dates (lawyers and paralegal and self)
+            for reminderDay in eventDates:
+                addEvent(calendarDict[calendar],eventKey + " Reminder",reminderDay) #add due dates and reminders (lawyers and paralegal and self)
+
+    # for calendar in validCalendars:
+    #     addEvent(calendarDict[calendar],userEvent.eventName, userEvent.date)
         
     return {
         "message": "Event added successfully",
@@ -100,6 +107,23 @@ def addEvent(targetFolder, eventName, eventDate):
     event.AllDayEvent = True
     event.start = eventDate # Ensure date is formatted as e.g. 2018-01-09)
     event.save() 
+
+def inputEventDates(dates):
+    eventDict["NOTICE TO MEDIATE, FORM 1"] = [dates["date1"],dates["rm1_date1"],dates["rm2_date1"],dates["rm3_date1"],dates["rm4_date1"]]
+    eventDict["EXPERT'S REPORT"] = [dates["date2"],dates["rm1_date2"],dates["rm2_date2"],dates["rm3_date2"],dates["rm4_date2"]]
+    eventDict["EXAMINATIONS FOR DISCOVERY"] = [dates["date3"],dates["rm1_date3"],dates["rm2_date3"],dates["rm3_date3"],dates["rm4_date3"],dates["rm5_date3"]]
+    eventDict["TRIAL BRIEF, FORM 41, PLAINTIFF"] = [dates["date4"],dates["rm1_date4"],dates["rm2_date4"]]
+    eventDict["TRIAL BRIEF, FORM 41, OP"] = [dates["date5"],dates["rm1_date5"],dates["rm2_date5"]]
+    eventDict["NOTICE TO ADMIT, FORM 23"] = [dates["date6"],dates["rm1_date6"],dates["rm2_date6"],dates["rm3_date6"],dates["rm4_date6"]]
+    eventDict["RESPONDING REPORTS"] = [dates["date7"],dates["rm1_date7"],dates["rm2_date7"],dates["rm3_date7"],dates["rm4_date7"]]
+    eventDict["TRIAL MANAGEMENT CONFERENCE"] = [dates["date8"],dates["rm1_date8"],dates["rm2_date8"],dates["rm3_date8"],dates["rm4_date8"],dates["rm5_date8"],dates["rm6_date8"]]
+    eventDict["NOTICE OF OBJECTION"] = [dates["date9"],dates["rm1_date9"],dates["rm2_date9"],dates["rm3_date9"],dates["rm4_date9"]]
+    eventDict["TRIAL RECORD"] = [dates["date10"],dates["rm1_date10"],dates["rm2_date10"],dates["rm3_date10"]]
+    eventDict["TRIAL CERTIFICATE, FORM 42"] = [dates["date11"],dates["rm1_date11"],dates["rm2_date11"],dates["rm3_date11"]]
+    eventDict["NOTICE OF EXAMINATION"] = [dates["date12"],dates["rm1_date12"],dates["rm2_date12"],dates["rm3_date12"]]
+    eventDict["INSPECTION OF PHOTOGRAPHS, ETC."] = [dates["date13"],dates["rm1_date13"],dates["rm2_date13"],dates["rm3_date13"]]
+    eventDict["NOTICE TO PRODUCE, FORM 43"] = [dates["date14"],dates["rm1_date14"],dates["rm2_date14"],dates["rm3_date14"]]
+    return eventDict #eventDict contains all event dates and reminder dates i..e {"Notice to Mediate, Form 1":["23-Aug-2024","23-Jul-2024","9-Aug-2024","16-Aug-2024","22-Aug-2024",]} First date is the due date, next x dates are reminder dates.
 
 @app.get("/calendars")
 def getCalendars(request: Request):
