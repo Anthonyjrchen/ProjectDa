@@ -7,22 +7,17 @@ import $ from 'jquery';
 const date = ref(null);
 const eventName = ref('');
 
-let categories = ref([]);
+let calendars = ref([]);
 
-const selectedCategories = ref([]);
+const selectedCalendars = ref([]);
 
 $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
     success:function(val) {
-        // categories=ref([
-        //     {name:val[0], key:"A"},
-        //     {name:val[1], key:"B"},
-        //     {name:val[2], key:"C"},
-        // ])
-        categories.value = [];
+        calendars.value = [];
         for (let i = 0; i < val.length; i++) {
-            categories.value.push({name:val[i], key:i})
+            calendars.value.push({name:val[i], key:i})
         }
     console.log(val)
     }
@@ -41,10 +36,14 @@ function formSubmit(e){
         data: JSON.stringify({
             date: formattedDate,
             eventName: eventName.value,
-            categories: selectedCategories.value,
+            calendars: selectedCalendars.value,
         }),
         success:function(e){
-            console.log(e)
+            if("error" in e) {
+                alert(e.error)
+            } else {
+                alert("Event added successfully to the following calendars: " + e.validCalendars)
+            }
         }
     });
 };
@@ -60,13 +59,13 @@ function formSubmit(e){
         <h2>Choose which calendar/s</h2>
         <div class="card flex justify-center">
             <div class="flex flex-col gap-4" id="calendarList">
-                <div v-for="category of categories" :key="category.key" class="flex items-center gap-2">
-                    <Checkbox class="calendarCheckbox" v-model="selectedCategories" :inputId="category.key" name="category" :value="category.name" />
-                    <label :for="category.key">{{ category.name }}</label>
+                <div v-for="calendar of calendars" :key="calendar.key" class="flex items-center gap-2">
+                    <Checkbox class="calendarCheckbox" v-model="selectedCalendars" :inputId="calendar.key" name="calendar" :value="calendar.name" />
+                    <label :for="calendar.key">{{ calendar.name }}</label>
                 </div>
             </div> 
         </div>
-        <div>{{ selectedCategories }}</div>
+        <div>{{ selectedCalendars }}</div>
         <button class="submit" type="submit">Add item</button>
     </form>
 </template>
