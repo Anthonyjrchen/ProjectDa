@@ -4,6 +4,7 @@ import DatePicker from 'primevue/datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
 import $ from 'jquery';
+
 const date = ref(null);
 const eventName = ref('');
 
@@ -56,13 +57,19 @@ function formSubmit(e){
     <form id="eventForm" v-on:submit.prevent="formSubmit">
         <h1 class="text-3xl font-bold">Adding</h1>
 
-        <h2 class="mt-2">Date of event</h2>
+        <h2>JML File No.</h2>
+        <input type="text" name="jmlFile" v-model="jmlFile" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
+        
+        <h2>Court File No.</h2>
+        <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
+        
+        <h2>Style of Cause</h2>
+        <input type="text" name="style" v-model="style" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
+        
+        <h2>Trial Event</h2>
         <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
         
-        <h2 class="mt-2">Name of event</h2>
-        <input type="text" name="eventName" v-model="eventName" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
-        
-        <h2 class="mt-2">Choose which calendar/s</h2>
+        <h2>Choose which calendar/s</h2>
         <div class="card flex justify-center">
             <div class="flex flex-col gap-4" id="calendarList">
                 <div v-for="calendar of calendars" :key="calendar.key" class="flex items-center gap-2">
@@ -72,19 +79,18 @@ function formSubmit(e){
             </div> 
         </div>
         <div>{{ selectedCategories }}</div>
-        <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-dark-white mt-5" type="submit">Add item</button>
+        <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-dark-white mt-3" type="submit">Add item</button>
     </form>
 </template>
 
 <style scoped>
-
-button {
-    font-family: inherit;
-}
 
 .datepicker {
     width: 150px;
     height: 40px;
 }
 
+h2 {
+    margin-top: 10px;
+}
 </style>
