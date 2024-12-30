@@ -31,36 +31,15 @@ for a in namespace.Folders:
 calendarFolder = namespace.GetDefaultFolder(9)
 outlook_navpane = client.Dispatch('Outlook.Application').ActiveExplorer().NavigationPane
 outlook_navmod = outlook_navpane.Modules.getNavigationModule(1)
-test1Calender = None
 calendarList = []
+calendarDict = {}
 # Iterate through NavigationGroups and NavigationFolders
 for group in outlook_navmod.NavigationGroups:
     # group.Name is My Calendars, All Group Calendars, etc.
     for folder in group.NavigationFolders:
         calendarList.append(folder.DisplayName)
-        # folders are calendars
-        # print("> " + folder.DisplayName + ", group:" + str(group.Position) + " position:" + str(folder.Position))
-        if folder.DisplayName=="Test 1":
-            test1Calender = folder
-            print("Found Test 1")
-print(test1Calender.Folder.EntryID)
-# print(test1Calender.GetIdsOfNames())
+        calendarDict[folder.DisplayName] = namespace.GetFolderFromID(folder.Folder.EntryID)
 
-# print(dir(namespace)))
-# print(namespace.GetFolderFromID(test1Calender.Folder.EntryID))
-
-    # if folder.Name == "Test 1":
-    #     test1Calender = folder
-    #     print(f"Found Calendar: {test1Calender.Name}")
-    #     break  # Exit the loop once found
-
-actual_folder = namespace.GetFolderFromID(test1Calender.Folder.EntryID)
-# print(dir(actual_folder.Items))
-# # print(actual_folder.Items)
-
-
-
-# to display calendars, use:
 # for idx, a in enumerate(calendarFolder.Folders):
 #     calendarList.append(a.Name)
 #     print("appending " + a.Name)
@@ -83,20 +62,40 @@ async def root():
 class EventData(BaseModel):
     date: str  # Date in the format YYYY-MM-DD
     eventName: str
-    categories: List[str]  # List of selected categories
+    calendars: List[str]  # List of selected categories
 
 @app.post("/add")
 async def add(userEvent:EventData):
-    event = actual_folder.Items.Add()
-    event.subject = userEvent.eventName
-    event.body = "Just a test"
-    event.AllDayEvent = True
-    event.start = event.date # Ensure date is formatted as e.g. 2018-01-09)
-    event.save() 
+    # find calendar(s)
+    targetCalendars = userEvent.calendars
+    validCalendars = []
+    invalidCalendars = []
+    for calendar in targetCalendars:
+        if calendar in calendarDict:
+            validCalendars.append(calendar)
+        else:
+            invalidCalendars.append(calendar)
+    if invalidCalendars:
+        return {"error":invalidCalendars}
+
+
+    # create and add event to every calendar
+    for calendar in validCalendars:
+        addEvent(calendarDict[calendar],userEvent.eventName, userEvent.date)
+        
     return {
         "message": "Event added successfully",
-        "event": userEvent
+        "event": userEvent,
+        "validCalendars": validCalendars,
     }
+
+def addEvent(targetFolder, eventName, eventDate):
+    event = targetFolder.Items.Add()
+    event.subject = eventName
+    event.body = "Just a test"
+    event.AllDayEvent = True
+    event.start = eventDate # Ensure date is formatted as e.g. 2018-01-09)
+    event.save() 
 
 @app.get("/calendars")
 def getCalendars(request: Request):
