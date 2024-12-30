@@ -54,18 +54,16 @@ function formSubmit(e){
     <head>
         <link href="./output.css" rel="stylesheet">
     </head>
-    <form>
-        <h1 class="text-3xl font-bold">Adding</h1>
-        
     <form id="eventForm" v-on:submit.prevent="formSubmit">
-        <h1>Adding</h1>
-        <h2>Date of event</h2>
+        <h1 class="text-3xl font-bold">Adding</h1>
+
+        <h2 class="mt-2">Date of event</h2>
         <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
-        <h2>Name of event</h2>
-        <input type="text" name="eventName" v-model="eventName" required />
-        <input type="text" v-model="eventName" required />
         
-        <h2>Choose which calendar/s</h2>
+        <h2 class="mt-2">Name of event</h2>
+        <input type="text" name="eventName" v-model="eventName" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
+        
+        <h2 class="mt-2">Choose which calendar/s</h2>
         <div class="card flex justify-center">
             <div class="flex flex-col gap-4" id="calendarList">
                 <div v-for="category of categories" :key="category.key" class="flex items-center gap-2">
@@ -75,7 +73,7 @@ function formSubmit(e){
             </div> 
         </div>
         <div>{{ selectedCategories }}</div>
-        <button class="submit" type="submit">Add item</button>
+        <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-dark-white mt-5" type="submit">Add item</button>
     </form>
 </template>
 
@@ -90,7 +88,4 @@ button {
     height: 40px;
 }
 
-.submit {
-    margin-top: 10px;
-}
 </style>
