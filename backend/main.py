@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request, Form
 import pandas as pd
 import win32com.client as client
 from fastapi.middleware.cors import CORSMiddleware
+import calculator
 
 app = FastAPI()
 
@@ -39,6 +40,8 @@ for group in outlook_navmod.NavigationGroups:
     for folder in group.NavigationFolders:
         calendarList.append(folder.DisplayName)
         calendarDict[folder.DisplayName] = namespace.GetFolderFromID(folder.Folder.EntryID)
+
+eventDict = {}
 
 # for idx, a in enumerate(calendarFolder.Folders):
 #     calendarList.append(a.Name)
@@ -78,6 +81,7 @@ async def add(userEvent:EventData):
     if invalidCalendars:
         return {"error":invalidCalendars}
 
+    inputEventDates(string_dates)
 
     # create and add event to every calendar
     for calendar in validCalendars:
@@ -101,3 +105,21 @@ def addEvent(targetFolder, eventName, eventDate):
 def getCalendars(request: Request):
     # print(calendarList)
     return calendarList
+
+'''
+CALCULATOR FUNCTION
+'''
+def calc_dates(year,month,day):
+    raw_dates = calculator.calculate_dates(year,month,day)
+    string_dates = {}
+    for key,date in raw_dates.items():
+        month = calculator.months2[str(date.month)]
+        string_dates[key] = str(date.day) + "-" + month + "-" + str(date.year)
+
+    return string_dates
+
+
+
+@app.get("/calcDates")
+def testCalcDates():
+    return calc_dates("2024","December","24")

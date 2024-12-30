@@ -63,8 +63,8 @@ function formSubmit(e){
         <input type="text" name="eventName" v-model="eventName" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
         
         <h2 class="mt-2">Choose which calendar/s</h2>
-        <div class="card flex justify-center">
-            <div class="flex flex-col gap-4" id="calendarList">
+        <div class="card flex justify-left">
+            <div class="flex flex-col gap-2" id="calendarList">
                 <div v-for="calendar of calendars" :key="calendar.key" class="flex items-center gap-2">
                     <Checkbox class="calendarCheckbox" v-model="selectedCalendars" :inputId="calendar.key" name="calendar" :value="calendar.name" />
                     <label :for="calendar.key">{{ calendar.name }}</label>
