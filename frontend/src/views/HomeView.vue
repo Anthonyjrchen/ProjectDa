@@ -19,7 +19,7 @@ import DeletingForm from '@/components/DeletingForm.vue';
     </div>
 
     <router-link to="/delete" class="outline-none focus:ring-0 focus:outline-none">
-      <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-dark-white m-3" type="submit">Go to Delete</button>
+      <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea m-3" type="submit">Go to Delete</button>
     </router-link>
   </main>
 </template>

@@ -23,15 +23,16 @@
 
 /* semantic color variables for this project */
 :root {
-  --color-background: theme('colors.azalea');
+  --color-background: theme('colors.dark-gray');
   --color-background-soft: theme('colors.rose-bud');
   --color-background-mute: theme('colors.cupid');
 
   --color-border: theme('colors.cupid');
   --color-border-hover: theme('colors.chantilly');
 
-  --color-heading: theme('colors.brink-pink');
+  --color-heading: theme('colors.rose-bud');
   --color-text: theme('colors.brink-pink');
+  
 
   /* --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
@@ -66,7 +67,7 @@
     --color-border: theme('colors.cupid');
     --color-border-hover: theme('colors.chantilly');
 
-    --color-heading: theme('colors.brink-pink');
+    --color-heading: theme('colors.rose-bud');
     --color-text: theme('colors.brink-pink');
   }
 }

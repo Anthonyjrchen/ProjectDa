@@ -7,7 +7,7 @@ import $ from 'jquery';
     <div class="table-container">
         <table class="scrollable-table">
             <thead>
-                <tr>
+                <tr class="headers">
                     <th>Form Name</th>
                     <th>Due Date</th>
                     <th>Reminder Dates</th>
@@ -407,8 +407,12 @@ h3 {
     font-weight: bolder;
 }
 
+.headers:hover {
+    background-color: #121212;
+}
+
 tr:hover {
-    background-color: #f9e6ea;
+    background-color: black;
 }
 
 th {
@@ -426,7 +430,7 @@ td {
 
 p {
     font-size: small;
-    color:#fb607f;
+    color:#f9e6ea;
 }
 
 .table-container {
