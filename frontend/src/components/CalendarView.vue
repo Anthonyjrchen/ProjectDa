@@ -7,9 +7,11 @@ import $ from 'jquery';
     <div class="table-container">
         <table class="scrollable-table">
             <thead>
-                <th>Form Name</th>
-                <th>Due Date</th>
-                <th>Reminder Dates</th>
+                <tr>
+                    <th>Form Name</th>
+                    <th>Due Date</th>
+                    <th>Reminder Dates</th>
+                </tr>
             </thead>
             <tbody>
                 <tr>
@@ -20,22 +22,24 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 day</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 day</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td> 
                 </tr>
@@ -47,22 +51,24 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 day</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 day</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -74,26 +80,28 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>2 months</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 day</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>2 months</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 day</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -104,34 +112,38 @@ import $ from 'jquery';
                 </td>
                 <td>
                     <table>
-                        <tr>
-                            <td>Plaintiff Due</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>OP Due</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>Plaintiff Due</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>OP Due</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -143,22 +155,24 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 day</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 day</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -170,22 +184,24 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 day</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 day</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -197,30 +213,32 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>4 months</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>3 months</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 months</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>4 months</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>3 months</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 months</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -232,22 +250,24 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 day</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 day</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -259,18 +279,20 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -282,18 +304,20 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -305,18 +329,20 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -327,19 +353,21 @@ import $ from 'jquery';
                 </td>
                 <td>...</td>
                 <td>
-                    <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
+                    <table>]
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -351,18 +379,20 @@ import $ from 'jquery';
                 <td>...</td>
                 <td>
                     <table>
-                        <tr>
-                            <td>1 month</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2 weeks</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>1 week</td>
-                            <td>...</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>1 month</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>2 weeks</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>1 week</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </td>
                 </tr>
@@ -373,26 +403,30 @@ import $ from 'jquery';
 
 <style scoped>
 
+h3 {
+    font-weight: bolder;
+}
+
 tr:hover {
-    background-color: #1f1f20;
+    background-color: #f9e6ea;
 }
 
 th {
-    border: 1px solid #52525b;
+    border: 1px solid #fcbec8;
     padding: 0.5rem 1rem;
     text-align: center;
     font-weight: 900;
 }
 
 td {
-    border: 1px solid #52525b;
+    border: 1px solid #fcbec8;
     padding: 0.5rem 1rem; 
     text-align: center; 
 }
 
 p {
     font-size: small;
-    color:#75757c;
+    color:#fb607f;
 }
 
 .table-container {
@@ -401,12 +435,13 @@ p {
   overflow-x: auto;
   overflow-y: auto;
   height: 800px; /* Fixed height for scrolling */
+  border: 0.5px solid #fb607f;
 }
 
 .scrollable-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto;
+  table-layout: auto;   
 }
 
 .scrollable-table th, .scrollable-table td {

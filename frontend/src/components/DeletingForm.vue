@@ -1,5 +1,21 @@
 <script setup>
 import { ref } from 'vue';
+
+let deleteCalendars = ref([]);
+
+
+$.ajax({
+    url:'http://localhost:8000/calendars',
+    type:'GET',
+    success:function(val) {
+        deleteCalendars.value = [];
+        for (let i = 0; i < val.length; i++) {
+            // add if statement to look for only David, Vanessa, Megaila, and Tyler?
+            deleteCalendars.value.push({name:val[i], key:i})
+        }
+    console.log(val)
+    }
+})
 import $ from 'jquery';
 const courtFile = ref('');
 function formSubmit(e){
@@ -28,9 +44,20 @@ function formSubmit(e){
         <link href="./output.css" rel="stylesheet">
     </head> 
     <form class="p-1.5" v-on:submit.prevent="formSubmit">
+        <h1 class="text-3xl font-bold p-1.5">Deleting</h1>
         <h2>Court File No.</h2>
         <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
             
+        <h2 class="mt-2">Choose which calendar/s</h2>
+        <div class="card flex justify-left">
+            <div class="flex flex-col gap-2" id="calendarList">
+                <div v-for="deleteCalendar of deleteCalendars" :key="deleteCalendar.key" class="flex items-center gap-2">
+                    <Checkbox class="calendarCheckbox" :inputId="deleteCalendar.key" name="deleteCalendar" :value="deleteCalendar.name" />
+                    <label :for="deleteCalendar.key">{{ deleteCalendar.name }}</label>
+                </div>
+            </div> 
+        </div>
+
         <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-dark-white mt-3 m-1" type="submit">Delete</button>
     </form>
 

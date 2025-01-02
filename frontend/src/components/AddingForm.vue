@@ -59,10 +59,10 @@ function formSubmit(e){
         <h1 class="text-3xl font-bold">Adding</h1>
 
         <h2>JML File No.</h2>
-        <input type="text" name="jmlFile" v-model="jmlFile" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
-        
+            <input type="text" name="jmlFile" v-model="jmlFile" class="p-1.5 !border-[1px] !border-sweet-pink text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+            
         <h2>Court File No.</h2>
-        <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+        <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-sweet-pink text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
         
         <h2>Style of Cause</h2>
         <input type="text" name="styleOfCause" v-model="styleOfCause" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
@@ -80,7 +80,7 @@ function formSubmit(e){
             </div> 
         </div>
         
-        <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-dark-white mt-3" type="submit">Add item</button>
+        <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
     </form>
 </template>
 
@@ -89,7 +89,6 @@ function formSubmit(e){
 .datepicker {
     width: 150px;
     height: 40px;
-    background-color: #121212 !important;
 }
 
 h2 {
