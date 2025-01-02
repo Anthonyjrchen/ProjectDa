@@ -73,20 +73,6 @@ for recipient in recipients:
 print(calendarDict)
 eventDict = {}
 
-# for idx, a in enumerate(calendarFolder.Folders):
-#     calendarList.append(a.Name)
-#     print("appending " + a.Name)
-#     if a.Name=="Test 1":
-#         test1Calender = a
-
-# this is for testing
-# targetFolder = None
-# if recipient.Resolve():
-#     targetFolder = namespace.GetDefaultFolder("Test 1",9)
-# else:
-#     raise Exception("No Recipient Found for name: " + "Test 1")
-# print(calendarFolder.Folders)
-
 @app.get("/")
 async def root():
     return "Backend is up and running"

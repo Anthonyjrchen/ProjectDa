@@ -1,8 +1,10 @@
 <script setup>
 import { ref } from 'vue';
-
+import $ from 'jquery';
+import Checkbox from 'primevue/checkbox';
 let deleteCalendars = ref([]);
-
+let selectedDeleteCalendars = ref([]);
+const allowedCalendars = ["Calendar(David Volk)","Calendar(Megaila Rose)","Calendar(Vanessa S. Werden)","Tyler Galbraith","Test 1(jneria@jml.ca)"]
 $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
@@ -10,13 +12,15 @@ $.ajax({
         deleteCalendars.value = [];
         for (let i = 0; i < val.length; i++) {
             // add if statement to look for only David, Vanessa, Megaila, and Tyler?
-            deleteCalendars.value.push({name:val[i], key:i})
+            if (allowedCalendars.includes(val[i])){
+                deleteCalendars.value.push({name:val[i], key:i})
+            }
         }
-    console.log(val)
+    console.log(deleteCalendars.value)
     }
 })
 
-import $ from 'jquery';
+
 const courtFile = ref('');
 function formSubmit(e){
     e.preventDefault();
@@ -56,7 +60,7 @@ function formSubmit(e){
                 <div class="card flex justify-left">
                     <div class="flex flex-col gap-2" id="calendarList">
                         <div v-for="deleteCalendar of deleteCalendars" :key="deleteCalendar.key" class="flex items-center gap-2">
-                            <Checkbox class="calendarCheckbox" :inputId="deleteCalendar.key" name="deleteCalendar" :value="deleteCalendar.name" />
+                            <Checkbox class="deleteCalendarCheckbox" v-model="selectedDeleteCalendars" :inputId="deleteCalendar.key" name="deleteCalendar" :value="deleteCalendar.name" />
                             <label :for="deleteCalendar.key">{{ deleteCalendar.name }}</label>
                         </div>
                     </div> 
