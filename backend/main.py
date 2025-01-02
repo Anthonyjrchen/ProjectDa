@@ -5,6 +5,7 @@ import pandas as pd
 import win32com.client as client
 from fastapi.middleware.cors import CORSMiddleware
 import calculator
+import time
 
 app = FastAPI()
 
@@ -129,7 +130,8 @@ async def add(userEvent:EventData):
 def addEvent(targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName):
     event = targetFolder.Items.Add()
     event.subject = jmlFileNum + " " + styleOfCause + " " + formName
-    event.body = courtFileNum
+    event.body = "This is an automatically generated event using ProjectDA."
+    event.location = "DAhandler - " + courtFileNum
     event.AllDayEvent = True
     event.start = eventDate # Ensure date is formatted as e.g. 2018-01-09)
     event.save() 
@@ -153,14 +155,17 @@ def inputEventDates(dates):
 
 @app.post("/delete")
 async def delete(deleteEvent: deleteEvent):
-    for calendar in calendarDict.keys():
-        x = calendarDict[calendar]
-        items = x.Items
-        for i in range(items.Count, 0, -1):
-            if items.Item(i).body.strip() == deleteEvent.caseNum.strip():
-                print("Deleting " + items.Item(i).subject + "...")
-                items.Item(i).delete()
-        print("Done deleting for: " + calendar)
+    t0 = time.time()
+    caseNum ="DAhandler - " + str(deleteEvent.caseNum.strip())
+    # for calendar in calendarDict.keys():
+    x = calendarDict["Megaila Rose"]
+    items = x.Items
+    for i in range(items.Count, 0, -1):
+        if items.Item(i).location == caseNum:
+            print("Deleting " + items.Item(i).subject + "...")
+            items.Item(i).delete()
+        # print(items.Item(i).location)
+    print("Done deleting for: " + "Megaila Rose")
 
     # for paralegal in paralegals:
     #     x = get_calendar(paralegal)
@@ -177,6 +182,10 @@ async def delete(deleteEvent: deleteEvent):
     #         print("Deleting " + items.Item(i).subject + "...")
     #         items.Item(i).delete()
     # print("Done deleting for main calendar")
+    
+    t1 = time.time()
+
+    print(t1-t0)
     return {"message":"Deleted Successfully"}
 
 @app.get("/calendars")
