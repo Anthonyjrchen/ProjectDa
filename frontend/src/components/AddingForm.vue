@@ -59,13 +59,13 @@ function formSubmit(e){
         <h1 class="text-3xl font-bold">Adding</h1>
 
         <h2>JML File No.</h2>
-        <input type="text" name="jmlFile" v-model="jmlFile" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
+        <input type="text" name="jmlFile" v-model="jmlFile" class="p-1.5 !border-[1px] !border-dark-white text-black !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
         
         <h2>Court File No.</h2>
-        <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
+        <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-dark-white text-black !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
         
         <h2>Style of Cause</h2>
-        <input type="text" name="style" v-model="style" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
+        <input type="text" name="style" v-model="style" class="p-1.5 !border-[1px] !border-dark-white text-black !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
         
         <h2>Trial Event</h2>
         <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>

@@ -39,7 +39,11 @@ for group in outlook_navmod.NavigationGroups:
     # group.Name is My Calendars, All Group Calendars, etc.
     for folder in group.NavigationFolders:
         calendarList.append(folder.DisplayName)
-        calendarDict[folder.DisplayName] = namespace.GetFolderFromID(folder.Folder.EntryID)
+        try:
+            calendarDict[folder.DisplayName] = namespace.GetFolderFromID(folder.Folder.EntryID)
+        except:
+            #try using GetSharedFolderFromID
+            print("Could not find folder for " + folder.DisplayName)
 
 eventDict = {}
 
