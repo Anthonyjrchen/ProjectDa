@@ -35,7 +35,7 @@ import CalendarView from '@/components/CalendarView.vue';
 .calendarView {
   flex: 5; /* Takes up more space */
   overflow: auto; /* Makes content scrollable if needed */
-  min-width: 1100px;
+  min-width: 1000px;
 }
 
 @media (max-width: 1024px) {

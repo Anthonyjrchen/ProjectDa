@@ -67,11 +67,8 @@ function formSubmit(e){
         <h2>Style of Cause</h2>
         <input type="text" name="style" v-model="style" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
         
-        <h2>Trial Event</h2>
+        <h2>Trial Date</h2>
         <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
-        
-        <h2 class="mt-2">Name of event</h2>
-        <input type="text" name="eventName" v-model="eventName" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white" required />
         
         <h2 class="mt-2">Choose which calendar/s</h2>
         <div class="card flex justify-left">
