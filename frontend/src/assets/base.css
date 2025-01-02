@@ -23,15 +23,16 @@
 
 /* semantic color variables for this project */
 :root {
-  --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
+  --color-background: theme('colors.azalea');
+  --color-background-soft: theme('colors.rose-bud');
+  --color-background-mute: theme('colors.cupid');
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
+  --color-border: theme('colors.cupid');
+  --color-border-hover: theme('colors.chantilly');
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
+  --color-heading: theme('colors.brink-pink');
+  --color-text: theme('colors.brink-pink');
+
   /* --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
@@ -46,7 +47,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  /* :root {
     --color-background: var(--vt-c-black);
     --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);
@@ -56,6 +57,17 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
+  } */
+  :root {
+    --color-background: theme('colors.dark-gray');
+    --color-background-soft: theme('colors.rose-bud');
+    --color-background-mute: theme('colors.cupid');
+
+    --color-border: theme('colors.cupid');
+    --color-border-hover: theme('colors.chantilly');
+
+    --color-heading: theme('colors.brink-pink');
+    --color-text: theme('colors.brink-pink');
   }
 }
 
