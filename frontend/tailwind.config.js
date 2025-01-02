@@ -6,6 +6,7 @@ export default {
     extend: {
       colors: {
         'dark-white': '#52525b', // Very light gray, off-white
+        'dark-gray': '#121212',
       },
     },
   },
