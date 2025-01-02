@@ -118,7 +118,7 @@ import $ from 'jquery';
                                 <td>...</td>
                             </tr>
                             <tr>
-                                <td>OP Due</td>
+                                <td>Defendant Due</td>
                                 <td>...</td>
                             </tr>
                         </tbody>
@@ -353,7 +353,7 @@ import $ from 'jquery';
                 </td>
                 <td>...</td>
                 <td>
-                    <table>]
+                    <table>
                         <tbody>
                             <tr>
                                 <td>1 month</td>
