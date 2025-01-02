@@ -6,7 +6,9 @@ import Checkbox from 'primevue/checkbox';
 import $ from 'jquery';
 
 const date = ref(null);
-const eventName = ref('');
+const jmlFile = ref('');
+const courtFile = ref('');
+const styleOfCause = ref('');
 
 let calendars = ref([]);
 
@@ -24,20 +26,18 @@ $.ajax({
     }
 })
 
-// document.getElementById("eventForm").addEventListener("submit", formSubmit(e));
-
 function formSubmit(e){
-    // console.log(date.value.toLocaleDateString())
     const formattedDate = date.value.toISOString().split('T')[0];
     e.preventDefault();
-    console.log("Event Date is " + formattedDate);
     $.ajax({
         url: 'http://127.0.0.1:8000/add',
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify({
             date: formattedDate,
-            eventName: eventName.value,
+            jmlFileNum: jmlFile.value,
+            courtFileNum: courtFile.value,
+            styleOfCause: styleOfCause.value,
             calendars: selectedCalendars.value,
         }),
         success:function(e){
@@ -65,7 +65,7 @@ function formSubmit(e){
         <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
         
         <h2>Style of Cause</h2>
-        <input type="text" name="style" v-model="style" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+        <input type="text" name="styleOfCause" v-model="styleOfCause" class="p-1.5 !border-[1px] !border-dark-white text-white !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
         
         <h2>Trial Date</h2>
         <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>

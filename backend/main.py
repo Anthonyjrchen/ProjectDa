@@ -27,24 +27,40 @@ app.add_middleware(
 
 outlook = client.Dispatch("Outlook.Application")
 namespace = outlook.GetNamespace("MAPI")
-for a in namespace.Folders:
-    print(a)
 calendarFolder = namespace.GetDefaultFolder(9)
 outlook_navpane = client.Dispatch('Outlook.Application').ActiveExplorer().NavigationPane
 outlook_navmod = outlook_navpane.Modules.getNavigationModule(1)
 calendarList = []
 calendarDict = {}
+with open("recipientList.txt", 'w') as f:
+    f.write("")
 # Iterate through NavigationGroups and NavigationFolders
 for group in outlook_navmod.NavigationGroups:
     # group.Name is My Calendars, All Group Calendars, etc.
-    for folder in group.NavigationFolders:
-        calendarList.append(folder.DisplayName)
-        try:
-            calendarDict[folder.DisplayName] = namespace.GetFolderFromID(folder.Folder.EntryID)
-        except:
-            #try using GetSharedFolderFromID
-            print("Could not find folder for " + folder.DisplayName)
-
+    if group.Name != "Shared Calendars":
+        for folder in group.NavigationFolders:
+            calendarList.append(folder.DisplayName)
+            try:
+                calendarDict[folder.DisplayName] = namespace.GetFolderFromID(folder.Folder.EntryID)
+            except:
+                print("Could not find folder for " + folder.DisplayName)
+    else:
+        #try using GetSharedFolderFromID
+        #Add to recipient list
+        for folder in group.NavigationFolders:
+            with open("recipientList.txt", 'a+') as f:
+                        if " - " in folder.DisplayName:
+                            f.write(folder.DisplayName.split(" - ")[1]+"\n")
+                        else:
+                            f.write(folder.DisplayName + "\n")
+                        f.close()
+recipients = open("recipientList.txt","r").read().split("\n")
+for recipient in recipients:
+    try:
+        calendarDict[recipient] = namespace.GetSharedDefaultFolder(namespace.CreateRecipient(recipient),9)
+    except:
+        print("Finished scanning recipientList")
+print(calendarDict)
 eventDict = {}
 
 # for idx, a in enumerate(calendarFolder.Folders):
@@ -68,8 +84,14 @@ async def root():
 
 class EventData(BaseModel):
     date: str  # Date in the format YYYY-MM-DD
-    eventName: str
+    jmlFileNum: str
+    courtFileNum: str
+    styleOfCause: str
     calendars: List[str]  # List of selected categories
+
+class deleteEvent(BaseModel):
+    caseNum: str
+
 
 @app.post("/add")
 async def add(userEvent:EventData):
@@ -91,9 +113,9 @@ async def add(userEvent:EventData):
     for calendar in validCalendars:
         for eventKey in eventDictKeys:
             eventDates = eventDict[eventKey]
-            addEvent(calendarDict[calendar],eventKey,eventDates.pop(0)) #add due dates (lawyers and paralegal and self)
+            addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,eventDates.pop(0), eventKey) #add due dates (lawyers and paralegal and self) (targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName) is the format for calling addEvent
             for reminderDay in eventDates:
-                addEvent(calendarDict[calendar],eventKey + " Reminder",reminderDay) #add due dates and reminders (lawyers and paralegal and self)
+                addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,reminderDay, eventKey + " Reminder") #add due dates and reminders (lawyers and paralegal and self)
 
     # for calendar in validCalendars:
     #     addEvent(calendarDict[calendar],userEvent.eventName, userEvent.date)
@@ -104,10 +126,10 @@ async def add(userEvent:EventData):
         "validCalendars": validCalendars,
     }
 
-def addEvent(targetFolder, eventName, eventDate):
+def addEvent(targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName):
     event = targetFolder.Items.Add()
-    event.subject = eventName
-    event.body = "Just a test"
+    event.subject = jmlFileNum + " " + styleOfCause + " " + formName
+    event.body = courtFileNum
     event.AllDayEvent = True
     event.start = eventDate # Ensure date is formatted as e.g. 2018-01-09)
     event.save() 
@@ -128,6 +150,34 @@ def inputEventDates(dates):
     eventDict["INSPECTION OF PHOTOGRAPHS, ETC."] = [dates["date13"],dates["rm1_date13"],dates["rm2_date13"],dates["rm3_date13"]]
     eventDict["NOTICE TO PRODUCE, FORM 43"] = [dates["date14"],dates["rm1_date14"],dates["rm2_date14"],dates["rm3_date14"]]
     return eventDict #eventDict contains all event dates and reminder dates i..e {"Notice to Mediate, Form 1":["23-Aug-2024","23-Jul-2024","9-Aug-2024","16-Aug-2024","22-Aug-2024",]} First date is the due date, next x dates are reminder dates.
+
+@app.post("/delete")
+async def delete(deleteEvent: deleteEvent):
+    for calendar in calendarDict.keys():
+        x = calendarDict[calendar]
+        items = x.Items
+        for i in range(items.Count, 0, -1):
+            if items.Item(i).body.strip() == deleteEvent.caseNum.strip():
+                print("Deleting " + items.Item(i).subject + "...")
+                items.Item(i).delete()
+        print("Done deleting for: " + calendar)
+
+    # for paralegal in paralegals:
+    #     x = get_calendar(paralegal)
+    #     items = x.Items
+    #     for i in range(items.Count, 0, -1):
+    #         if items.Item(i).body.strip() == file.strip():
+    #             print("Deleting " + items.Item(i).subject + "...")
+    #             items.Item(i).delete()
+    #     print("Done deleting for: " + paralegal)
+
+    # items = namespace.GetDefaultFolder(9).Items
+    # for i in range(items.Count, 0, -1):
+    #     if items.Item(i).body.strip() == file.strip():
+    #         print("Deleting " + items.Item(i).subject + "...")
+    #         items.Item(i).delete()
+    # print("Done deleting for main calendar")
+    return {"message":"Deleted Successfully"}
 
 @app.get("/calendars")
 def getCalendars(request: Request):
