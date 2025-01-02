@@ -35,12 +35,14 @@ import DeletingForm from '@/components/DeletingForm.vue';
 .addingForm {
   flex: 1; /* Takes up less space */
   padding: 16px;
+
 }
 
 .calendarView {
   flex: 5; /* Takes up more space */
   overflow: auto; /* Makes content scrollable if needed */
   min-width: 1000px;
+  margin: 20px;
 }
 
 @media (max-width: 1024px) {

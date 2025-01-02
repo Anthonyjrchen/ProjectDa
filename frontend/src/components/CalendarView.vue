@@ -109,7 +109,7 @@ import $ from 'jquery';
                             <td>...</td>
                         </tr>
                         <tr>
-                            <td>OP document</td>
+                            <td>OP Due</td>
                             <td>...</td>
                         </tr>
                     </table>
