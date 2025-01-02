@@ -79,7 +79,6 @@ function formSubmit(e){
                 </div>
             </div> 
         </div>
-        <div>{{ selectedCategories }}</div>
         
         <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-dark-white mt-3" type="submit">Add item</button>
     </form>

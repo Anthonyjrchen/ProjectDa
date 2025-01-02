@@ -35,26 +35,35 @@ calendarList = []
 calendarDict = {}
 with open("recipientList.txt", 'w') as f:
     f.write("")
+ignoredCalendars = open("ignoreCalendars.txt","r").read().split("\n")
+
 # Iterate through NavigationGroups and NavigationFolders
 for group in outlook_navmod.NavigationGroups:
     # group.Name is My Calendars, All Group Calendars, etc.
     if group.Name != "Shared Calendars":
         for folder in group.NavigationFolders:
-            calendarList.append(folder.DisplayName)
-            try:
-                calendarDict[folder.DisplayName] = namespace.GetFolderFromID(folder.Folder.EntryID)
-            except:
-                print("Could not find folder for " + folder.DisplayName)
+            if folder.DisplayName not in ignoredCalendars:
+                calendarList.append(str(folder.Folder.FolderPath).split("\\")[-1]+"("+str(folder.Folder.FolderPath).split("\\")[2]+")")
+                try:
+                    calendarDict[str(folder.Folder.FolderPath).split("\\")[-1]+"("+str(folder.Folder.FolderPath).split("\\")[2]+")"] = namespace.GetFolderFromID(folder.Folder.EntryID)
+                except:
+                    print("Could not find folder for " + folder.DisplayName)
     else:
         #try using GetSharedFolderFromID
         #Add to recipient list
         for folder in group.NavigationFolders:
-            with open("recipientList.txt", 'a+') as f:
-                        if " - " in folder.DisplayName:
-                            f.write(folder.DisplayName.split(" - ")[1]+"\n")
-                        else:
-                            f.write(folder.DisplayName + "\n")
-                        f.close()
+            if folder.DisplayName not in ignoredCalendars:
+                if " - " in folder.DisplayName:
+                    calendarList.append(folder.DisplayName.split(" - ")[1]+"\n")
+                else:
+                    calendarList.append(folder.DisplayName + "\n")
+                
+                with open("recipientList.txt", 'a+') as f:
+                            if " - " in folder.DisplayName:
+                                f.write(folder.DisplayName.split(" - ")[1]+"\n")
+                            else:
+                                f.write(folder.DisplayName + "\n")
+                            f.close()
 recipients = open("recipientList.txt","r").read().split("\n")
 for recipient in recipients:
     try:
@@ -80,8 +89,7 @@ eventDict = {}
 
 @app.get("/")
 async def root():
-    
-    return {"message": "Hello World"}
+    return "Backend is up and running"
 
 class EventData(BaseModel):
     date: str  # Date in the format YYYY-MM-DD
@@ -92,6 +100,7 @@ class EventData(BaseModel):
 
 class deleteEvent(BaseModel):
     caseNum: str
+    calendars: List[str]
 
 
 @app.post("/add")
@@ -157,15 +166,14 @@ def inputEventDates(dates):
 async def delete(deleteEvent: deleteEvent):
     t0 = time.time()
     caseNum ="DAhandler - " + str(deleteEvent.caseNum.strip())
-    # for calendar in calendarDict.keys():
-    x = calendarDict["Megaila Rose"]
-    items = x.Items
-    for i in range(items.Count, 0, -1):
-        if items.Item(i).location == caseNum:
-            print("Deleting " + items.Item(i).subject + "...")
-            items.Item(i).delete()
-        # print(items.Item(i).location)
-    print("Done deleting for: " + "Megaila Rose")
+    for calendar in deleteEvent.calendars:
+        x = calendarDict[calendar]
+        items = x.Items
+        for i in range(items.Count, 0, -1):
+            if items.Item(i).location == caseNum:
+                print("Deleting " + items.Item(i).subject + "...")
+                items.Item(i).delete()
+        print("Done deleting for: " + calendar)
 
     # for paralegal in paralegals:
     #     x = get_calendar(paralegal)
