@@ -68,6 +68,7 @@ function formSubmit(e){
         <input type="text" name="styleOfCause" v-model="styleOfCause" class="p-1.5 !border-[1px] !border-sweet-pink text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
         
         <h2>Trial Date</h2>
+        <!-- !!! figure out how to edit styles (primevue specific editing?) -->
         <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
         
         <h2 class="mt-2">Choose which calendar/s</h2>
