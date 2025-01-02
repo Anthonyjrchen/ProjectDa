@@ -1,7 +1,5 @@
 <script setup>
 
-import AddingForm from '../components/AddingForm.vue'
-import CalendarView from '@/components/CalendarView.vue';
 import DeletingForm from '@/components/DeletingForm.vue';
 
 </script>
@@ -9,12 +7,8 @@ import DeletingForm from '@/components/DeletingForm.vue';
 <template>
   <main>
     <div class="container">
-      <div class="addingForm">
-        <AddingForm />
-      </div>
-
-      <div class="calendarView">
-        <CalendarView />
+      <div class="deletingForm">
+        <DeletingForm />
       </div>
 
     </div>
