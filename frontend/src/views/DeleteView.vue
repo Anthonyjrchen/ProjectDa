@@ -17,6 +17,7 @@ import DeletingForm from '@/components/DeletingForm.vue';
 <style scoped>
 
 .container {
+  width:100vw;
   margin-left: 15px;
   margin-top: 20px;
 }

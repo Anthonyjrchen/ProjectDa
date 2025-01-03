@@ -105,7 +105,7 @@ h2 {
 .container {
   display: flex;
   box-sizing: border-box;
-  gap: 16px;
+  gap: 300px;
 }
 
 </style>
