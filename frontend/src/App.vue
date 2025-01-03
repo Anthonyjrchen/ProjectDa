@@ -15,12 +15,12 @@ import 'primeflex/primeflex.css'
           <HeaderBar />
       </div>
   </div>
-  <div class="grid" style="width:100vw;height:100vh; background-color: grey">
+  <div class="grid" style="width:100vw;height:100vh;">
       <div class="col-fixed" style="width:100px;">
           <div class="text-center p-3 border-round-sm font-bold" style="background-color: aqua;">100px</div>
       </div>
       <div class="col">
-          <div class="text-center p-3 border-round-sm font-bold" style="background-color: aqua;">auto</div>
+          <RouterView />
       </div>
   </div>
 </template>

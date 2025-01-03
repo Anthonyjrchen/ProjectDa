@@ -4,7 +4,7 @@ import $ from 'jquery';
 import Checkbox from 'primevue/checkbox';
 let deleteCalendars = ref([]);
 let selectedDeleteCalendars = ref([]);
-const allowedCalendars = ["Calendar(David Volk)","Calendar(Megaila Rose)","Calendar(Vanessa S. Werden)","Tyler Galbraith"] //Add names here that you want to be able to delete from.
+const allowedCalendars = ["Calendar(David Volk)","Calendar(Megaila Rose)","Calendar(Vanessa S. Werden)","Tyler Galbraith","Test 1(eventhandlertest2@outlook.com)","Test 2(eventhandlertest2@outlook.com)","Calendar(eventhandlertest2@outlook.com)"] //Add names here that you want to be able to delete from.
 $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
@@ -22,11 +22,15 @@ $.ajax({
 
 
 const courtFile = ref('');
+const deleteProgress = ref(0);
+const deleteTotal = ref(0);
 function formSubmit(e){
+    deleteProgress.value = 0;
+    deleteTotal.value = 0;
     e.preventDefault();
     console.log("Delete events with caseFileNum: " + courtFile.value)
     $.ajax({
-        url: 'http://127.0.0.1:8000/delete',
+        url: 'http://127.0.0.1:8000/initDelete',
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -34,10 +38,27 @@ function formSubmit(e){
             calendars: selectedDeleteCalendars.value,
         }),
         success:function(e){
-            if("error" in e) {
-                alert(e.error)
-            } else {
-                alert("Events with the courtFileNum: " + courtFile.value + " was deleted.")
+            let deleteDictKeys = Object.keys(e.deleteDict) //deleteDict = {"calendar_name":128,"calendar2_name":64}
+            for (let i = 0; i < deleteDictKeys.length; i++){
+                deleteTotal.value+=e.deleteDict[deleteDictKeys[i]].length;
+            }
+
+            for (let i = 0; i < deleteDictKeys.length; i++){
+                for (var j = e.deleteDict[deleteDictKeys[i]].length-1; j >= 0 ; j--){
+                    $.ajax({
+                        url: 'http://127.0.0.1:8000/delete',
+                        type: 'post',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            calendar: deleteDictKeys[i],
+                            curItem: e.deleteDict[deleteDictKeys[i]][j].toString(),
+                        }),
+                        success:function(e){
+                            deleteProgress.value+=1
+                            
+                        }
+                    });
+                }
             }
         }
     });
@@ -70,10 +91,11 @@ function formSubmit(e){
         </div>
 
         <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Delete</button>
+        <div>{{ deleteProgress }}/{{ deleteTotal }}</div>
     </form>
 
     <div class="p-0.5">
-        <router-link to="/home">
+        <router-link to="/">
             <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Go to Add</button>
         </router-link>
     </div>

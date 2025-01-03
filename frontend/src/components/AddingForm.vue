@@ -3,13 +3,14 @@ import { ref } from 'vue';
 import DatePicker from 'primevue/datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
-import $ from 'jquery';
+import $, { event } from 'jquery';
 
 const date = ref(null);
 const jmlFile = ref('');
 const courtFile = ref('');
 const styleOfCause = ref('');
-
+const addProgress = ref(0);
+const addTotal = ref(0);
 let calendars = ref([]);
 
 const selectedCalendars = ref([]);
@@ -29,22 +30,70 @@ $.ajax({
 function formSubmit(e){
     const formattedDate = date.value.toISOString().split('T')[0];
     e.preventDefault();
+    addProgress.value=0;
+    addTotal.value = 0;
     $.ajax({
-        url: 'http://127.0.0.1:8000/add',
+        url: 'http://127.0.0.1:8000/initiateAdd',
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify({
             date: formattedDate,
-            jmlFileNum: jmlFile.value,
-            courtFileNum: courtFile.value,
-            styleOfCause: styleOfCause.value,
             calendars: selectedCalendars.value,
         }),
         success:function(e){
-            if("error" in e) {
-                alert(e.error)
-            } else {
-                alert("Event added successfully to the following calendars: " + e.validCalendars)
+            // return {
+            // "splitDate":splitDate,
+            // "eventDict":eventDict,
+            // "validCalendars":validCalendars,
+            // }  this is /initiateAdd 's return value.
+            
+            // for calendar in validCalendars:
+            //  for eventKey in eventDictKeys:
+            //      eventDates = eventDict[eventKey]
+            //      addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,eventDates.pop(0), eventKey) #add due dates (lawyers and paralegal and self) (targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName) is the format for calling addEvent
+            //      for reminderDay in eventDates:
+            //          addEventReminder(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,reminderDay, eventKey) #add due dates and reminders (paralegal and self)        
+            addTotal.value += 64*e.validCalendars.length;
+            const eventDictKeys = Object.keys(e.eventDict);
+            for (let j = 0; j < e.validCalendars.length; j++) {
+                for (let i = 0; i < eventDictKeys.length; i++) {
+                    
+                    var eventDates = e.eventDict[eventDictKeys[i]];
+                    $.ajax({
+                        url: 'http://127.0.0.1:8000/add',
+                        type: 'post',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            targetFolder: e.validCalendars[j],
+                            courtFileNum: courtFile.value,
+                            jmlFileNum: jmlFile.value,
+                            styleOfCause: styleOfCause.value,
+                            eventDate:eventDates[0],
+                            formName:eventDictKeys[i],
+                        }),
+                        success(e){
+                            addProgress.value++;
+                        }
+                    })
+                    for (let x = 1; x < eventDates.length; x++) {
+                        $.ajax({
+                            url: 'http://127.0.0.1:8000/add/reminder',
+                            type: 'post',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                targetFolder: e.validCalendars[j],
+                                courtFileNum: courtFile.value,
+                                jmlFileNum: jmlFile.value,
+                                styleOfCause: styleOfCause.value,
+                                eventDate: eventDates[x],
+                                formName:eventDictKeys[i],
+                            }),
+                            success(e){
+                                addProgress.value++;
+                            }
+                        })
+                    }
+                } 
             }
         }
     });
@@ -82,6 +131,7 @@ function formSubmit(e){
         </div>
         
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
+        <div>{{ addProgress }}/{{ addTotal }}</div>
     </form>
 </template>
 
