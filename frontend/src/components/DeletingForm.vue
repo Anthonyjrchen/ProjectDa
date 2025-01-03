@@ -93,13 +93,6 @@ function formSubmit(e){
         <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Delete</button>
         <div>{{ deleteProgress }}/{{ deleteTotal }}</div>
     </form>
-
-    <div class="p-0.5">
-        <router-link to="/">
-            <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Go to Add</button>
-        </router-link>
-    </div>
-
 </template>
 
 <style scoped>
