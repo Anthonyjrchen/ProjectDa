@@ -38,6 +38,8 @@ progress = 0
 with open("recipientList.txt", 'w') as f:
     f.write("")
 ignoredCalendars = open("ignoreCalendars.txt","r").read().split("\n")
+lawyerCalendars = open("lawyerCalendars.txt","r").read().split("\n")
+
 
 # Iterate through NavigationGroups and NavigationFolders
 for group in outlook_navmod.NavigationGroups:
@@ -105,19 +107,7 @@ async def add(userEvent:initData):
         "splitDate":splitDate,
         "eventDict":eventDict,
         "validCalendars":validCalendars,
-        }
-    #for each valid calendar, traverse eventDict and add events and event reminders
-    # for calendar in validCalendars:
-    #     for eventKey in eventDictKeys:
-    #         eventDates = eventDict[eventKey]
-    #         addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,eventDates.pop(0), eventKey) #add due dates (lawyers and paralegal and self) (targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName) is the format for calling addEvent
-    #         for reminderDay in eventDates:
-    #             addEventReminder(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,reminderDay, eventKey) #add due dates and reminders (paralegal and self)        
-    return {
-        "message": "Event added successfully",
-        "event": userEvent,
-        "validCalendars": validCalendars,
-    }
+        } 
 
 class Event(BaseModel):
     targetFolder:str
@@ -228,7 +218,7 @@ async def trueDelete(trueDelete:trueDelete):
 
 @app.get("/calendars")
 def getCalendars():
-    return calendarList
+    return {"calendarList":calendarList,"lawyerCalendars":lawyerCalendars}
 
 '''
 CALCULATOR FUNCTION

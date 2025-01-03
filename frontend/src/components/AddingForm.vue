@@ -12,7 +12,7 @@ const styleOfCause = ref('');
 const addProgress = ref(0);
 const addTotal = ref(0);
 const progressPercentage = ref(0);
-let calendars = ref([]);
+let calendars = ref([{"name":"Backend Not Running Yet.", key:"test"}]);
 
 const selectedCalendars = ref([]);
 
@@ -21,8 +21,8 @@ $.ajax({
     type:'GET',
     success:function(val) {
         calendars.value = [];
-        for (let i = 0; i < val.length; i++) {
-            calendars.value.push({name:val[i], key:i})
+        for (let i = 0; i < val.calendarList.length; i++) {
+            calendars.value.push({name:val.calendarList[i], key:i})
         }
     console.log(val)
     }
@@ -75,7 +75,7 @@ function formSubmit(e){
                         }),
                         success(e){
                             addProgress.value++;
-                            progressPercentage.value = addProgress.value/addTotal.value*100
+                            progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
                         }
                     })
                     for (let x = 1; x < eventDates.length; x++) {
@@ -93,7 +93,7 @@ function formSubmit(e){
                             }),
                             success(e){
                                 addProgress.value++;
-                                progressPercentage.value = addProgress.value/addTotal.value*100
+                                progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
                             }
                         })
                     }

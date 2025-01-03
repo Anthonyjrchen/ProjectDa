@@ -2,19 +2,24 @@
 import { ref } from 'vue';
 import $ from 'jquery';
 import Checkbox from 'primevue/checkbox';
-let deleteCalendars = ref([]);
-let selectedDeleteCalendars = ref([]);
-const allowedCalendars = ["Calendar(David Volk)","Calendar(Megaila Rose)","Calendar(Vanessa S. Werden)","Tyler Galbraith","Test 1(eventhandlertest2@outlook.com)","Test 2(eventhandlertest2@outlook.com)","Calendar(eventhandlertest2@outlook.com)"] //Add names here that you want to be able to delete from.
+import Popover from 'primevue/popover';
+
+let deleteCalendars = ref([{"name":"Backend Not Running Yet.", key:"test"}]);
+let deleteCalendarsRemaining = ref([]);
+let selectedDeleteCalendars = ref([]); //Need to have Jana selected by default
+const allowedCalendars = [] //Add names here that you want to be able to delete from.
 $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
     success:function(val) {
         deleteCalendars.value = [];
-        for (let i = 0; i < val.length; i++) {
-            // add if statement to look for only David, Vanessa, Megaila, and Tyler?
-            if (allowedCalendars.includes(val[i])){
-                deleteCalendars.value.push({name:val[i], key:i})
+        for (let i = 0; i < val.calendarList.length; i++) {
+            if (val.lawyerCalendars.includes(val.calendarList[i])){
+                deleteCalendars.value.push({name:val.calendarList[i], key:i})
+            } else {
+                deleteCalendarsRemaining.value.push({name:val.calendarList[i], key:i})
             }
+            // if (val[i]==) if val[i](calendarname) == Jana's calendar, add to selectedDeleteCalendars and check her checkbox.
         }
     console.log(deleteCalendars.value)
     }
@@ -63,6 +68,17 @@ function formSubmit(e){
         }
     });
 };
+const op = ref();
+const members = ref([
+    { name: 'Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
+    { name: 'Bernardo Dominic', image: 'bernardodominic.png', email: 'bernardo@email.com', role: 'Editor' },
+    { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' }
+]);
+
+const toggle = (event) => {
+    console.log('hi')
+    op.value.toggle(event);
+}
 </script>
 
 <template>
@@ -78,15 +94,25 @@ function formSubmit(e){
             </div>
 
             <div class="calendars">
-                <h2 class="mt-2">Choose which calendar/s</h2>
+                <h2 class="mt-2">Choose which calendar(s)</h2>
                 <div class="card flex justify-left">
                     <div class="flex flex-col gap-2" id="calendarList">
                         <div v-for="deleteCalendar of deleteCalendars" :key="deleteCalendar.key" class="flex items-center gap-2">
                             <Checkbox class="deleteCalendarCheckbox" v-model="selectedDeleteCalendars" :inputId="deleteCalendar.key" name="deleteCalendar" :value="deleteCalendar.name" />
                             <label :for="deleteCalendar.key">{{ deleteCalendar.name }}</label>
                         </div>
-                    </div> 
+                    </div>
                 </div>
+                
+                <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="button" v-on:click="toggle" style="display:flex;align-items: center;gap:5px;"><i class="pi pi-bars"></i> Other calendar(s)</button>
+                <Popover ref="op">
+                    <div class="flex flex-col gap-2" id="calendarListRemaining">
+                        <div v-for="deleteCalendar of deleteCalendarsRemaining" :key="deleteCalendar.key" class="flex items-center gap-2">
+                            <Checkbox class="deleteCalendarCheckbox" v-model="selectedDeleteCalendars" :inputId="deleteCalendar.key" name="deleteCalendar" :value="deleteCalendar.name" />
+                            <label :for="deleteCalendar.key">{{ deleteCalendar.name }}</label>
+                        </div>
+                    </div>
+                </Popover>
             </div>
         </div>
 
