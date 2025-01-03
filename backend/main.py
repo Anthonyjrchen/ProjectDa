@@ -14,6 +14,7 @@ origins = [
     "http://localhost",
     "http://localhost:8080",
     "http://localhost:5173",
+    "https://anthonyjrchen.github.io/ProjectDa",
 ]
 
 app.add_middleware(
@@ -23,7 +24,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+print("Updated server")
 outlook = client.Dispatch("Outlook.Application")
 namespace = outlook.GetNamespace("MAPI")
 calendarFolder = namespace.GetDefaultFolder(9)
@@ -68,7 +69,6 @@ for recipient in recipients:
         calendarDict[recipient] = namespace.GetSharedDefaultFolder(namespace.CreateRecipient(recipient),9)
     except:
         print("Finished scanning recipientList")
-print(calendarDict)
 eventDict = {}
 
 @app.get("/")
