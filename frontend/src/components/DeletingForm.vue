@@ -4,7 +4,7 @@ import $ from 'jquery';
 import Checkbox from 'primevue/checkbox';
 let deleteCalendars = ref([]);
 let selectedDeleteCalendars = ref([]);
-const allowedCalendars = ["Calendar(David Volk)","Calendar(Megaila Rose)","Calendar(Vanessa S. Werden)","Tyler Galbraith","Test 1(jneria@jml.ca)"]
+const allowedCalendars = ["Calendar(David Volk)","Calendar(Megaila Rose)","Calendar(Vanessa S. Werden)","Tyler Galbraith"] //Add names here that you want to be able to delete from.
 $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
@@ -31,6 +31,7 @@ function formSubmit(e){
         contentType: 'application/json',
         data: JSON.stringify({
             caseNum: courtFile.value,
+            calendars: selectedDeleteCalendars.value,
         }),
         success:function(e){
             if("error" in e) {

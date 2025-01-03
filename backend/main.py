@@ -54,9 +54,9 @@ for group in outlook_navmod.NavigationGroups:
         for folder in group.NavigationFolders:
             if folder.DisplayName not in ignoredCalendars:
                 if " - " in folder.DisplayName:
-                    calendarList.append(folder.DisplayName.split(" - ")[1]+"\n")
+                    calendarList.append(folder.DisplayName.split(" - ")[1])
                 else:
-                    calendarList.append(folder.DisplayName + "\n")
+                    calendarList.append(folder.DisplayName)
                 
                 with open("recipientList.txt", 'a+') as f:
                             if " - " in folder.DisplayName:
@@ -101,7 +101,8 @@ async def add(userEvent:EventData):
         else:
             invalidCalendars.append(calendar)
     if invalidCalendars:
-        return {"error":invalidCalendars}
+        print(calendarDict)
+        return {"error":str(invalidCalendars) + " was not able to be added to"}
     splitDate = userEvent.date.split("-")
     inputEventDates(calc_dates(splitDate[0],splitDate[1],splitDate[2])) #fills the global eventDict variable with events and their due/reminder dates
     eventDictKeys = eventDict.keys()
@@ -111,11 +112,7 @@ async def add(userEvent:EventData):
             eventDates = eventDict[eventKey]
             addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,eventDates.pop(0), eventKey) #add due dates (lawyers and paralegal and self) (targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName) is the format for calling addEvent
             for reminderDay in eventDates:
-                addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,reminderDay, eventKey + " Reminder") #add due dates and reminders (lawyers and paralegal and self)
-
-    # for calendar in validCalendars:
-    #     addEvent(calendarDict[calendar],userEvent.eventName, userEvent.date)
-        
+                addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,reminderDay, eventKey + " Reminder") #add due dates and reminders (lawyers and paralegal and self)        
     return {
         "message": "Event added successfully",
         "event": userEvent,
