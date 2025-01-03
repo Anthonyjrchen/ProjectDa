@@ -11,6 +11,7 @@ const courtFile = ref('');
 const styleOfCause = ref('');
 const addProgress = ref(0);
 const addTotal = ref(0);
+const progressPercentage = ref(0);
 let calendars = ref([]);
 
 const selectedCalendars = ref([]);
@@ -32,6 +33,7 @@ function formSubmit(e){
     e.preventDefault();
     addProgress.value=0;
     addTotal.value = 0;
+    progressPercentage.value = 0;
     $.ajax({
         url: 'http://127.0.0.1:8000/initiateAdd',
         type: 'post',
@@ -73,6 +75,7 @@ function formSubmit(e){
                         }),
                         success(e){
                             addProgress.value++;
+                            progressPercentage.value = addProgress.value/addTotal.value*100
                         }
                     })
                     for (let x = 1; x < eventDates.length; x++) {
@@ -90,6 +93,7 @@ function formSubmit(e){
                             }),
                             success(e){
                                 addProgress.value++;
+                                progressPercentage.value = addProgress.value/addTotal.value*100
                             }
                         })
                     }
@@ -132,7 +136,7 @@ function formSubmit(e){
         
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
         <div>{{ addProgress }}/{{ addTotal }}</div>
-        <ProgressBar :value="addProgress"></ProgressBar>
+        <ProgressBar :value="progressPercentage"></ProgressBar>
     </form>
 </template>
 
