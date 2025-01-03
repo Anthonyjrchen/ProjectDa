@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import List
 from pydantic import BaseModel
 from fastapi import FastAPI, Request, Form
 import pandas as pd
@@ -6,6 +6,7 @@ import win32com.client as client
 from fastapi.middleware.cors import CORSMiddleware
 import calculator
 import time
+import uvicorn
 
 app = FastAPI()
 
@@ -22,9 +23,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-
 
 outlook = client.Dispatch("Outlook.Application")
 namespace = outlook.GetNamespace("MAPI")
@@ -201,3 +199,10 @@ def calc_dates(year,month,day):
 @app.get("/calcDates")
 def testCalcDates():
     return calc_dates("2024","December","24")
+
+def serve():
+    """Serve the web application."""
+    uvicorn.run(app, port=8000)
+
+if __name__ == "__main__":
+    serve()
