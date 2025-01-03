@@ -132,6 +132,7 @@ function formSubmit(e){
         
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
         <div>{{ addProgress }}/{{ addTotal }}</div>
+        <ProgressBar :value="addProgress"></ProgressBar>
     </form>
 </template>
 

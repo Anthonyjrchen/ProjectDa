@@ -34,7 +34,7 @@ import logo from "./assets/images/DAhandlerTransparent.png"
                 <ul class="list-none p-0 m-0 overflow-hidden">
                   <li>
                     <RouterLink to="/" v-ripple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
-                        <i class="pi pi-home mr-2 custom-icon"></i>
+                        <i class="pi pi-plus mr-2 custom-icon"></i>
                         <!-- insert adding logo here-->
                         <span class="font-medium text-light-pink">Adding</span>
                     </RouterLink>
@@ -42,7 +42,7 @@ import logo from "./assets/images/DAhandlerTransparent.png"
                   <div class="divider"></div>
                   <li>
                     <RouterLink to="/delete" v-ripple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
-                      <i class="pi pi-bookmark mr-2 custom-icon"></i>
+                      <i class="pi pi-minus mr-2 custom-icon"></i>
                       <!-- insert deleting logo here-->
                       <span class="font-medium text-light-pink">Deleting</span>
                     </RouterLink>

@@ -7,10 +7,10 @@ import $ from 'jquery';
     <div class="table-container">
         <table class="scrollable-table">
             <thead>
-                <tr class="headers">
-                    <th>Form Name</th>
-                    <th>Due Date</th>
-                    <th>Reminder Dates</th>
+                <tr class="headers bg-brink-pink text-light-pink">
+                    <th class="!border-[1px] !border-light-pink bg-brink-pink text-light-pink">Form Name</th>
+                    <th class="!border-[1px] !border-light-pink bg-brink-pink text-light-pink">Due Date</th>
+                    <th class="!border-[1px] !border-light-pink bg-brink-pink text-light-pink">Reminder Dates</th>
                 </tr>
             </thead>
             <tbody>
@@ -423,9 +423,9 @@ th {
     font-weight: 900;
 }
 
-thead {
+/*thead {
     position: fixed;
-}
+} */
 
 td {
     border: 1px solid #fcbec8;
@@ -445,6 +445,11 @@ p {
   overflow-y: auto;
   height: 800px; /* Fixed height for scrolling */
   border: 0.5px solid #fb607f;
+}
+
+.table-container thead th {
+    position: sticky;
+    top: 0;
 }
 
 .scrollable-table {
