@@ -8,3 +8,9 @@ Marzban Boardroom (seats 6)
 Logan Boardroom (seats 14)
 Laptop #1
 Laptop #2
+Laura Dickeson
+Jenkins Boardroom (seats 4)
+Marzban Boardroom (seats 6)
+Logan Boardroom (seats 14)
+Laptop #1
+Laptop #2

@@ -14,6 +14,7 @@ origins = [
     "http://localhost",
     "http://localhost:8080",
     "http://localhost:5173",
+    "http://localhost:5173",
     "https://anthonyjrchen.github.io/ProjectDa",
 ]
 
@@ -32,9 +33,13 @@ outlook_navpane = client.Dispatch('Outlook.Application').ActiveExplorer().Naviga
 outlook_navmod = outlook_navpane.Modules.getNavigationModule(1)
 calendarList = []
 calendarDict = {}
+storeIdDict = {}
+progress = 0
 with open("recipientList.txt", 'w') as f:
     f.write("")
 ignoredCalendars = open("ignoreCalendars.txt","r").read().split("\n")
+lawyerCalendars = open("lawyerCalendars.txt","r").read().split("\n")
+
 
 # Iterate through NavigationGroups and NavigationFolders
 for group in outlook_navmod.NavigationGroups:
@@ -42,9 +47,11 @@ for group in outlook_navmod.NavigationGroups:
     if group.Name != "Shared Calendars":
         for folder in group.NavigationFolders:
             if folder.DisplayName not in ignoredCalendars:
-                calendarList.append(str(folder.Folder.FolderPath).split("\\")[-1]+"("+str(folder.Folder.FolderPath).split("\\")[2]+")")
+                calendarName = str(folder.Folder.FolderPath).split("\\")[-1]+"("+str(folder.Folder.FolderPath).split("\\")[2]+")"
+                storeIdDict[calendarName] = folder.Folder.StoreID
+                calendarList.append(calendarName)
                 try:
-                    calendarDict[str(folder.Folder.FolderPath).split("\\")[-1]+"("+str(folder.Folder.FolderPath).split("\\")[2]+")"] = namespace.GetFolderFromID(folder.Folder.EntryID)
+                    calendarDict[calendarName] = namespace.GetFolderFromID(folder.Folder.EntryID)
                 except:
                     print("Could not find folder for " + folder.DisplayName)
     else:
@@ -75,19 +82,12 @@ eventDict = {}
 async def root():
     return "Backend is up and running"
 
-class EventData(BaseModel):
+class initData(BaseModel):
     date: str  # Date in the format YYYY-MM-DD
-    jmlFileNum: str
-    courtFileNum: str
-    styleOfCause: str
     calendars: List[str]  # List of selected categories
 
-class deleteEvent(BaseModel):
-    caseNum: str
-    calendars: List[str]
-
-@app.post("/add")
-async def add(userEvent:EventData):
+@app.post("/initiateAdd")
+async def add(userEvent:initData):
     # find calendar(s)
     targetCalendars = userEvent.calendars
     validCalendars = []
@@ -103,83 +103,122 @@ async def add(userEvent:EventData):
     splitDate = userEvent.date.split("-")
     inputEventDates(calc_dates(splitDate[0],splitDate[1],splitDate[2])) #fills the global eventDict variable with events and their due/reminder dates
     eventDictKeys = eventDict.keys()
-    #for each valid calendar, traverse eventDict and add events and event reminders
-    for calendar in validCalendars:
-        for eventKey in eventDictKeys:
-            eventDates = eventDict[eventKey]
-            addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,eventDates.pop(0), eventKey) #add due dates (lawyers and paralegal and self) (targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName) is the format for calling addEvent
-            for reminderDay in eventDates:
-                addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,reminderDay, eventKey + " Reminder") #add due dates and reminders (lawyers and paralegal and self)        
     return {
-        "message": "Event added successfully",
-        "event": userEvent,
-        "validCalendars": validCalendars,
-    }
+        "splitDate":splitDate,
+        "eventDict":eventDict,
+        "validCalendars":validCalendars,
+        } 
 
-def addEvent(targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName):
-    event = targetFolder.Items.Add()
-    event.subject = jmlFileNum + " " + styleOfCause + " " + formName
+class Event(BaseModel):
+    targetFolder:str
+    courtFileNum:str
+    jmlFileNum:str
+    styleOfCause:str
+    eventDate:List[str]
+    formName: str
+
+@app.post("/add")
+async def addEvent(e:Event):
+    event = calendarDict[e.targetFolder].Items.Add()
+    event.subject = e.jmlFileNum + " " + e.styleOfCause + " " + e.formName #still need to format event subject name
     event.body = "This is an automatically generated event using ProjectDA."
-    event.location = "DAhandler - " + courtFileNum
+    event.location = "DAhandler - " + e.courtFileNum
     event.AllDayEvent = True
-    event.start = eventDate # Ensure date is formatted as e.g. 2018-01-09)
+    event.start = e.eventDate[1] # Ensure date is formatted as e.g. 2018-01-09)
+    event.save()
+    
+@app.post("/add/reminder")
+async def addEventReminder(e:Event):
+    event = calendarDict[e.targetFolder].Items.Add()
+    event.subject = e.jmlFileNum + " " + e.styleOfCause + " " + e.eventDate[0] + " " +e.formName #still need to format event subject name
+    event.body = "This is an automatically generated event using ProjectDA."
+    event.location = "DAhandler - " + e.courtFileNum
+    event.AllDayEvent = True
+    event.start = e.eventDate[1] # Ensure date is formatted as e.g. 2018-01-09)
     event.save() 
 
 def inputEventDates(dates):
-    eventDict["NOTICE TO MEDIATE, FORM 1"] = [dates["date1"],dates["rm1_date1"],dates["rm2_date1"],dates["rm3_date1"],dates["rm4_date1"]]
-    eventDict["EXPERT'S REPORT"] = [dates["date2"],dates["rm1_date2"],dates["rm2_date2"],dates["rm3_date2"],dates["rm4_date2"]]
-    eventDict["EXAMINATIONS FOR DISCOVERY"] = [dates["date3"],dates["rm1_date3"],dates["rm2_date3"],dates["rm3_date3"],dates["rm4_date3"],dates["rm5_date3"]]
-    eventDict["TRIAL BRIEF, FORM 41, PLAINTIFF"] = [dates["date4"],dates["rm1_date4"],dates["rm2_date4"]]
-    eventDict["TRIAL BRIEF, FORM 41, OP"] = [dates["date5"],dates["rm1_date5"],dates["rm2_date5"]]
-    eventDict["NOTICE TO ADMIT, FORM 23"] = [dates["date6"],dates["rm1_date6"],dates["rm2_date6"],dates["rm3_date6"],dates["rm4_date6"]]
-    eventDict["RESPONDING REPORTS"] = [dates["date7"],dates["rm1_date7"],dates["rm2_date7"],dates["rm3_date7"],dates["rm4_date7"]]
-    eventDict["TRIAL MANAGEMENT CONFERENCE"] = [dates["date8"],dates["rm1_date8"],dates["rm2_date8"],dates["rm3_date8"],dates["rm4_date8"],dates["rm5_date8"],dates["rm6_date8"]]
-    eventDict["NOTICE OF OBJECTION"] = [dates["date9"],dates["rm1_date9"],dates["rm2_date9"],dates["rm3_date9"],dates["rm4_date9"]]
-    eventDict["TRIAL RECORD"] = [dates["date10"],dates["rm1_date10"],dates["rm2_date10"],dates["rm3_date10"]]
-    eventDict["TRIAL CERTIFICATE, FORM 42"] = [dates["date11"],dates["rm1_date11"],dates["rm2_date11"],dates["rm3_date11"]]
-    eventDict["NOTICE OF EXAMINATION"] = [dates["date12"],dates["rm1_date12"],dates["rm2_date12"],dates["rm3_date12"]]
-    eventDict["INSPECTION OF PHOTOGRAPHS, ETC."] = [dates["date13"],dates["rm1_date13"],dates["rm2_date13"],dates["rm3_date13"]]
-    eventDict["NOTICE TO PRODUCE, FORM 43"] = [dates["date14"],dates["rm1_date14"],dates["rm2_date14"],dates["rm3_date14"]]
+    eventDict["NOTICE TO MEDIATE, FORM 1"] = [["",dates["date1"]],["1 month",dates["rm1_date1"]],["2 weeks",dates["rm2_date1"]],["1 week",dates["rm3_date1"]],["1 day",dates["rm4_date1"]]]
+    
+    eventDict["EXPERT'S REPORT"] = [["",dates["date2"]],["1 month",dates["rm1_date2"]],["2 weeks",dates["rm2_date2"]],["1 week",dates["rm3_date2"]],["1 day",dates["rm4_date2"]]]
+
+    eventDict["EXAMINATIONS FOR DISCOVERY"] = [["",dates["date3"]],["2 months",dates["rm1_date3"]],["1 month",dates["rm2_date3"]],["2 weeks",dates["rm3_date3"]],["1 week",dates["rm4_date3"]],["1 day",dates["rm5_date3"]]]
+
+    eventDict["TRIAL BRIEF, FORM 41, PLAINTIFF"] = [["",dates["date4"]],["1 month",dates["rm1_date4"]],["1 week",dates["rm2_date4"]]]
+
+    eventDict["TRIAL BRIEF, FORM 41, OP"] = [["",dates["date5"]],["1 month",dates["rm1_date5"]],["1 week",dates["rm2_date5"]]]
+
+    eventDict["NOTICE TO ADMIT, FORM 23"] = [["",dates["date6"]],["1 month",dates["rm1_date6"]],["2 weeks",dates["rm2_date6"]],["1 week",dates["rm3_date6"]],["1 day",dates["rm4_date6"]]]
+
+    eventDict["RESPONDING REPORTS"] = [["",dates["date7"]],["1 month",dates["rm1_date7"]],["2 weeks",dates["rm2_date7"]],["1 week",dates["rm3_date7"]],["1 day",dates["rm4_date7"]]]
+
+    eventDict["TRIAL MANAGEMENT CONFERENCE"] = [["",dates["date8"]],["4 months",dates["rm1_date8"]],["3 months", dates["rm2_date8"]],["2 months",dates["rm3_date8"]],["1 month",dates["rm4_date8"]],["2 weeks", dates["rm5_date8"]],["1 week", dates["rm6_date8"]]]
+    
+    eventDict["NOTICE OF OBJECTION"] = [["",dates["date9"]],["1 month",dates["rm1_date9"]],["2 weeks",dates["rm2_date9"]],["1 week",dates["rm3_date9"]],["1 day",dates["rm4_date9"]]]
+
+    eventDict["TRIAL RECORD"] = [["",dates["date10"]],["1 month",dates["rm1_date10"]],["2 weeks",dates["rm2_date10"]],["1 week",dates["rm3_date10"]]]
+    eventDict["TRIAL CERTIFICATE, FORM 42"] = [["",dates["date11"]],["1 month",dates["rm1_date11"]],["2 weeks",dates["rm2_date11"]],["1 week",dates["rm3_date11"]]]
+    eventDict["NOTICE OF EXAMINATION"] = [["",dates["date12"]],["1 month",dates["rm1_date12"]],["2 weeks",dates["rm2_date12"]],["1 week",dates["rm3_date12"]]]
+    eventDict["INSPECTION OF PHOTOGRAPHS, ETC."] = [["",dates["date13"]],["1 month",dates["rm1_date13"]],["2 weeks",dates["rm2_date13"]],["1 week",dates["rm3_date13"]]]
+    eventDict["NOTICE TO PRODUCE, FORM 43"] = [["",dates["date14"]],["1 month",dates["rm1_date14"]],["2 weeks",dates["rm2_date14"]],["1 week",dates["rm3_date14"]]]
     return eventDict #eventDict contains all event dates and reminder dates i..e {"Notice to Mediate, Form 1":["23-Aug-2024","23-Jul-2024","9-Aug-2024","16-Aug-2024","22-Aug-2024",]} First date is the due date, next x dates are reminder dates.
 
-@app.post("/delete")
-async def delete(deleteEvent: deleteEvent):
+class initDeleteObject(BaseModel):
+    caseNum:str
+    calendars: List[str]
+
+@app.post("/initDelete")
+async def delete(initDeleteObject:initDeleteObject):
     t0 = time.time()
-    caseNum ="DAhandler - " + str(deleteEvent.caseNum.strip())
-    for calendar in deleteEvent.calendars:
+    deleteDict = {}
+    caseNum ="DAhandler - " + str(initDeleteObject.caseNum.strip())
+    for calendar in initDeleteObject.calendars:
         x = calendarDict[calendar]
         items = x.Items
+        
+        itemsToDelete = [];
         for i in range(items.Count, 0, -1):
             if items.Item(i).location == caseNum:
-                print("Deleting " + items.Item(i).subject + "...")
-                items.Item(i).delete()
-        print("Done deleting for: " + calendar)
-
-    # for paralegal in paralegals:
-    #     x = get_calendar(paralegal)
-    #     items = x.Items
-    #     for i in range(items.Count, 0, -1):
-    #         if items.Item(i).body.strip() == file.strip():
-    #             print("Deleting " + items.Item(i).subject + "...")
-    #             items.Item(i).delete()
-    #     print("Done deleting for: " + paralegal)
-
-    # items = namespace.GetDefaultFolder(9).Items
-    # for i in range(items.Count, 0, -1):
-    #     if items.Item(i).body.strip() == file.strip():
-    #         print("Deleting " + items.Item(i).subject + "...")
-    #         items.Item(i).delete()
-    # print("Done deleting for main calendar")
-    
+                itemsToDelete.append(items.Item(i).EntryID)
+        deleteDict[calendar] = itemsToDelete
     t1 = time.time()
 
     print(t1-t0)
-    return {"message":"Deleted Successfully"}
+    return {"deleteDict":deleteDict}
+
+class deleteEvent(BaseModel):
+    caseNum: str
+    calendar: str
+    curItem: str
+listToDelete = []
+@app.post("/planDelete")
+async def deleteEvent(deleteEvent: deleteEvent):
+    listToDelete = []
+    caseNum ="DAhandler - " + str(deleteEvent.caseNum.strip())
+    items = calendarDict[deleteEvent.calendar].Items
+    if items.Item(deleteEvent.curItem).location == caseNum:
+        # print("Deleting " + items.Item(deleteEvent.curItem).subject + "...")
+        # items.Item(deleteEvent.curItem).delete()
+        listToDelete.append(deleteEvent.curItem)
+    return {"message":"successful"}
+
+class trueDelete(BaseModel):
+    calendar:str
+    curItem:str
+
+@app.post("/delete")
+async def trueDelete(trueDelete:trueDelete):
+    items = calendarDict[trueDelete.calendar].Items
+    # items.Item(int(trueDelete.curItem)).delete()
+    # .GetItemFromID(items.Item(int(trueDelete.curItem)).EntryID).subject
+    targetCalendar = calendarDict[trueDelete.calendar]
+    namespace.GetItemFromID(trueDelete.curItem,storeIdDict[trueDelete.calendar]).delete()
+    return
+
 
 @app.get("/calendars")
-def getCalendars(request: Request):
-    # print(calendarList)
-    return calendarList
+def getCalendars():
+    return {"calendarList":calendarList,"lawyerCalendars":lawyerCalendars}
 
 '''
 CALCULATOR FUNCTION

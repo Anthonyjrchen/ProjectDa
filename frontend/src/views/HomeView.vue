@@ -13,18 +13,22 @@ import DeletingForm from '@/components/DeletingForm.vue';
         <AddingForm />
       </div>
 
+  
+    
+
       <div class="calendarView">
         <CalendarView />
       </div>
     </div>
 
     
-      <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea m-3"><router-link to="/delete" class="outline-none focus:ring-0 focus:outline-none">Go to Delete</router-link></button>
+      
     
   </main>
 </template>
 
 <style scoped>
+
 
 .container {
   display: flex; /* Flexbox for side-by-side layout */
@@ -44,6 +48,7 @@ import DeletingForm from '@/components/DeletingForm.vue';
   min-width: 1000px;
   margin: 20px;
 }
+
 
 @media (max-width: 1024px) {
   .calendarView {
@@ -65,5 +70,7 @@ import DeletingForm from '@/components/DeletingForm.vue';
 * {
   box-sizing: border-box; /* Ensure padding doesn't affect overall width */
 }
+
+
 
 </style>

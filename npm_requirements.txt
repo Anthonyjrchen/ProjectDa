@@ -3,3 +3,6 @@ npm install jquery
 npm install primevue
 npm install primevue @primevue/themes
 npm install -g @vue/cli
+npm install primeflex
+npm install primevue primeicons
+npm install primevue@latest primeicons@latest

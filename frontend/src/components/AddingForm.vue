@@ -3,14 +3,16 @@ import { ref } from 'vue';
 import DatePicker from 'primevue/datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
-import $ from 'jquery';
+import $, { event } from 'jquery';
 
 const date = ref(null);
 const jmlFile = ref('');
 const courtFile = ref('');
 const styleOfCause = ref('');
-
-let calendars = ref([]);
+const addProgress = ref(0);
+const addTotal = ref(0);
+const progressPercentage = ref(0);
+let calendars = ref([{"name":"Backend Not Running Yet.", key:"test"}]);
 
 const selectedCalendars = ref([]);
 
@@ -19,8 +21,8 @@ $.ajax({
     type:'GET',
     success:function(val) {
         calendars.value = [];
-        for (let i = 0; i < val.length; i++) {
-            calendars.value.push({name:val[i], key:i})
+        for (let i = 0; i < val.calendarList.length; i++) {
+            calendars.value.push({name:val.calendarList[i], key:i})
         }
     console.log(val)
     }
@@ -29,22 +31,73 @@ $.ajax({
 function formSubmit(e){
     const formattedDate = date.value.toISOString().split('T')[0];
     e.preventDefault();
+    addProgress.value=0;
+    addTotal.value = 0;
+    progressPercentage.value = 0;
     $.ajax({
-        url: 'http://127.0.0.1:8000/add',
+        url: 'http://127.0.0.1:8000/initiateAdd',
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify({
             date: formattedDate,
-            jmlFileNum: jmlFile.value,
-            courtFileNum: courtFile.value,
-            styleOfCause: styleOfCause.value,
             calendars: selectedCalendars.value,
         }),
         success:function(e){
-            if("error" in e) {
-                alert(e.error)
-            } else {
-                alert("Event added successfully to the following calendars: " + e.validCalendars)
+            // return {
+            // "splitDate":splitDate,
+            // "eventDict":eventDict,
+            // "validCalendars":validCalendars,
+            // }  this is /initiateAdd 's return value.
+            
+            // for calendar in validCalendars:
+            //  for eventKey in eventDictKeys:
+            //      eventDates = eventDict[eventKey]
+            //      addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,eventDates.pop(0), eventKey) #add due dates (lawyers and paralegal and self) (targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName) is the format for calling addEvent
+            //      for reminderDay in eventDates:
+            //          addEventReminder(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,reminderDay, eventKey) #add due dates and reminders (paralegal and self)        
+            addTotal.value += 64*e.validCalendars.length;
+            const eventDictKeys = Object.keys(e.eventDict);
+            for (let j = 0; j < e.validCalendars.length; j++) {
+                for (let i = 0; i < eventDictKeys.length; i++) {
+                    
+                    var eventDates = e.eventDict[eventDictKeys[i]];
+                    $.ajax({
+                        url: 'http://127.0.0.1:8000/add',
+                        type: 'post',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            targetFolder: e.validCalendars[j],
+                            courtFileNum: courtFile.value,
+                            jmlFileNum: jmlFile.value,
+                            styleOfCause: styleOfCause.value,
+                            eventDate:eventDates[0],
+                            formName:eventDictKeys[i],
+                        }),
+                        success(e){
+                            addProgress.value++;
+                            progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
+                        }
+                    })
+                    for (let x = 1; x < eventDates.length; x++) {
+                        $.ajax({
+                            url: 'http://127.0.0.1:8000/add/reminder',
+                            type: 'post',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                targetFolder: e.validCalendars[j],
+                                courtFileNum: courtFile.value,
+                                jmlFileNum: jmlFile.value,
+                                styleOfCause: styleOfCause.value,
+                                eventDate: eventDates[x],
+                                formName:eventDictKeys[i],
+                            }),
+                            success(e){
+                                addProgress.value++;
+                                progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
+                            }
+                        })
+                    }
+                } 
             }
         }
     });
@@ -59,18 +112,18 @@ function formSubmit(e){
         <h1 class="text-3xl font-bold">Adding</h1>
 
         <h2>JML File No.</h2>
-            <input type="text" name="jmlFile" v-model="jmlFile" class="p-1.5 !border-[1px] !border-sweet-pink text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+            <input type="text" name="jmlFile" v-model="jmlFile" class="p-1.5 !border-[2px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
             
         <h2>Court File No.</h2>
-        <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-sweet-pink text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+        <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[2px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
         
         <h2>Style of Cause</h2>
-        <input type="text" name="styleOfCause" v-model="styleOfCause" class="p-1.5 !border-[1px] !border-sweet-pink text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+        <input type="text" name="styleOfCause" v-model="styleOfCause" class="p-1.5 !border-[2px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
         
         <h2>Trial Date</h2>
         <!-- !!! figure out how to edit styles (primevue specific editing?) -->
-        <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
-        
+        <DatePicker v-model="date" class="datepicker" name="date" fluid iconDisplay="input" dateFormat="dd/mm/yy" input-class="!border-[2px] !border-brink-pink !bg-rose-bud !text-dark-gray" calendar-class="rounded"></DatePicker>
+
         <h2 class="mt-2">Choose which calendar/s</h2>
         <div class="card flex justify-left">
             <div class="flex flex-col gap-2" id="calendarList">
@@ -82,18 +135,22 @@ function formSubmit(e){
         </div>
         
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
+        <div>{{ addProgress }}/{{ addTotal }}</div>
+        <ProgressBar :value="progressPercentage"></ProgressBar>
     </form>
 </template>
 
 <style scoped>
 
-.datepicker {
-    width: 150px;
-    height: 40px;
-}
-
 h2 {
     margin-top: 10px;
     color: #fadbe1;
 }
+
+.p-datepicker {
+    width: 187px;
+    height: 40px;
+}
+
+
 </style>
