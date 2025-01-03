@@ -16,8 +16,10 @@ export default {
         'chantilly': '#faccd6',
         'azalea': '#fadbe1',
         'light-pink': '#f9e6ea',
+
         'sidebar-gray': '#18181a',
         'persimmon': '#fe5757',
+        'text-box': '#0a0b0b',
       },
     },
   },
