@@ -407,6 +407,7 @@ h3 {
     font-weight: bolder;
 }
 
+
 .headers:hover {
     background-color: #121212;
 }
@@ -420,6 +421,10 @@ th {
     padding: 0.5rem 1rem;
     text-align: center;
     font-weight: 900;
+}
+
+thead {
+    position: fixed;
 }
 
 td {
