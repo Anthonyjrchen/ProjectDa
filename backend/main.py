@@ -86,7 +86,6 @@ class deleteEvent(BaseModel):
     caseNum: str
     calendars: List[str]
 
-
 @app.post("/add")
 async def add(userEvent:EventData):
     # find calendar(s)
@@ -193,8 +192,6 @@ def calc_dates(year,month,day):
         string_dates[key] = str(date.day) + "-" + month + "-" + str(date.year)
 
     return string_dates
-
-
 
 @app.get("/calcDates")
 def testCalcDates():
