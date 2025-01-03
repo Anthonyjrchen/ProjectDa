@@ -48,12 +48,12 @@ function formSubmit(e){
     <head>
         <link href="./output.css" rel="stylesheet">
     </head> 
-    <form class="p-1.5" v-on:submit.prevent="formSubmit">
+    <form v-on:submit.prevent="formSubmit">
         <h1 class="text-3xl font-bold">Deleting</h1>
         <div class="container">
             <div class="courtFileNumInput">
                 <h2>Court File No.</h2>
-                <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-dark-white text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+                <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
             </div>
 
             <div class="calendars">
@@ -73,9 +73,9 @@ function formSubmit(e){
     </form>
 
     <div class="p-0.5">
-        <router-link to="/home">
-            <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Go to Add</button>
-        </router-link>
+            <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-[605px]" type="submit">
+                <router-link to="/">Go to Add  </router-link></button>
+      
     </div>
 
 </template>
@@ -83,13 +83,14 @@ function formSubmit(e){
 <style scoped>
 
 h2 {
+    margin-top: 10px;
     color: #fadbe1;
 }
 
 .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  display: flex;
+  box-sizing: border-box;
+  gap: 16px;
 }
 
 </style>

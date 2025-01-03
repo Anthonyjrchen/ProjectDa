@@ -59,18 +59,18 @@ function formSubmit(e){
         <h1 class="text-3xl font-bold">Adding</h1>
 
         <h2>JML File No.</h2>
-            <input type="text" name="jmlFile" v-model="jmlFile" class="p-1.5 !border-[1px] !border-sweet-pink text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+            <input type="text" name="jmlFile" v-model="jmlFile" class="p-1.5 !border-[2px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
             
         <h2>Court File No.</h2>
-        <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-sweet-pink text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+        <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[2px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
         
         <h2>Style of Cause</h2>
-        <input type="text" name="styleOfCause" v-model="styleOfCause" class="p-1.5 !border-[1px] !border-sweet-pink text-light-pink !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-dark-gray" required />
+        <input type="text" name="styleOfCause" v-model="styleOfCause" class="p-1.5 !border-[2px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
         
         <h2>Trial Date</h2>
         <!-- !!! figure out how to edit styles (primevue specific editing?) -->
-        <DatePicker v-model="date" class="datepicker" name="date" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy"></DatePicker>
-        
+        <DatePicker v-model="date" class="datepicker" name="date" fluid iconDisplay="input" dateFormat="dd/mm/yy" input-class="!border-[2px] !border-brink-pink !bg-rose-bud !text-dark-gray" calendar-class="rounded"></DatePicker>
+
         <h2 class="mt-2">Choose which calendar/s</h2>
         <div class="card flex justify-left">
             <div class="flex flex-col gap-2" id="calendarList">
@@ -87,13 +87,15 @@ function formSubmit(e){
 
 <style scoped>
 
-.datepicker {
-    width: 150px;
-    height: 40px;
-}
-
 h2 {
     margin-top: 10px;
     color: #fadbe1;
 }
+
+.p-datepicker {
+    width: 187px;
+    height: 40px;
+}
+
+
 </style>
