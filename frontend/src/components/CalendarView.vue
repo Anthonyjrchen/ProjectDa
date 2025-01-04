@@ -105,11 +105,11 @@ watch(selectedDate, (newVal, oldVal) => {
     <!-- use DataTable PrimeVue or just fix the header thing -->
     <div class="table-container">
         <table class="scrollable-table">
-            <thead>
-                <tr class="headers bg-brink-pink text-light-pink">
-                    <th class=" bg-brink-pink text-light-pink">Form Name</th>
-                    <th class=" bg-brink-pink text-light-pink">Due Date</th>
-                    <th class=" bg-brink-pink text-light-pink">Reminder Dates</th>
+            <thead class="bg-brink-pink text-light-pink">
+                <tr class="headers">
+                    <th>Form Name</th>
+                    <th>Due Date</th>
+                    <th>Reminder Dates</th>
                 </tr>
             </thead>
             <tbody>
@@ -506,9 +506,8 @@ h3 {
     font-weight: bolder;
 }
 
-
 .headers:hover {
-    background-color: #121212;
+    background-color: #fb607f;
 }
 
 tr:hover {
@@ -521,39 +520,27 @@ th {
     font-weight: 900;
 }
 
-td {
-    border: 1px solid #fcbec8;
-    padding: 0.5rem 1rem; 
-    text-align: center; 
-}
-
 p {
     font-size: small;
     color:#f9e6ea;
 }
 
 .table-container {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: auto;
-  height: 800px; /* Fixed height for scrolling */
-  
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    height: 800px; /* Fixed height for scrolling */
 }
 
-.table-container thead {
+/* .table-container thead {
     position:sticky;
     top:0;
-    border: 2px solid #fb607f !important;
+    
+    border: 1px solid #fb607f !important;
     border-top-left-radius: 7px !important;
     border-top-right-radius: 7px !important;
-}
-
-.table-container thead tr th {
-    position: sticky;
-    top: 0;
-    
-}
+} */
 
 .scrollable-table {
   width: 100%;
@@ -561,11 +548,30 @@ p {
   table-layout: auto;   
 }
 
-.scrollable-table th, .scrollable-table td {
-  padding: 8px;
-  text-align: left;
+.scrollable-table thead {
+    position: sticky;
+    top:0;
+    /* border: 2px solid #fb607f !important; */
 }
 
+.scrollable-table th {
+    padding: 8px;
+    text-align: left;
+    border-right: 1px solid #faa1af !important;
+}
+
+.scrollable-table td {
+    padding: 8px;
+    text-align: left;
+    /* border: 1px solid #faa1af !important; */
+    border-bottom: 1px solid #faa1af !important;
+    border-right: 1px solid #faa1af !important;
+    border-left: 1px solid #faa1af !important;
+    border-top: 1px solid #faa1af !important;
+}
+
+
+/* for responsive design */
 @media (max-width: 1024px) {
     .table-container {
         flex: 3; /* Reduces space given to calendarView on medium screens */
@@ -594,7 +600,7 @@ p {
     .scrollable-table th, .scrollable-table td {
         white-space: normal;
     }
-}
+} 
 
  
 </style>
