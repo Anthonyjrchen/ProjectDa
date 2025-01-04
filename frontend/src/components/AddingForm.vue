@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import DatePicker from 'primevue/datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
-import $, { event } from 'jquery';
+import $ from 'jquery';
 
 const date = ref(null);
 const jmlFile = ref('');
@@ -142,7 +142,7 @@ function formSubmit(e){
         
         <h2>Trial Date</h2>
         <!-- !!! figure out how to edit styles (primevue specific editing?) -->
-        <DatePicker v-model="date" class="datepicker" name="date" fluid iconDisplay="input" dateFormat="dd/mm/yy" input-class="!border-[2px] !border-brink-pink !bg-rose-bud !text-dark-gray" calendar-class="rounded"></DatePicker>
+        <DatePicker v-model="date" class="datepicker" name="date" fluid iconDisplay="input" dateFormat="dd/mm/yy" input-class="!border-[2px] !border-brink-pink !bg-rose-bud !text-dark-gray" calendar-class="rounded" @update:model-value="(value) => $emit('dateChanged', value)"></DatePicker>
 
         <h2 class="mt-2">Choose which calendar/s</h2>
         <div class="card flex justify-left">
