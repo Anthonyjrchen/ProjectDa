@@ -71,7 +71,7 @@ function saveTexts() {
         <div class="col">
             <div class="text-center p-3 border-round-sm bg-azalea font-bold mb-[20px] mt-[15px]">
                 <h1>
-                    Holidays
+                    Holidays (YYYY-MM-DD)
                 </h1>
             </div>
             <Textarea v-model="holidaysText" rows="20" cols="20"></Textarea>
