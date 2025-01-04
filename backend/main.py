@@ -37,6 +37,7 @@ storeIdDict = {}
 progress = 0
 with open("recipientList.txt", 'w') as f:
     f.write("")
+    f.close()
 ignoredCalendars = open("ignoreCalendars.txt","r").read().split("\n")
 lawyerCalendars = open("lawyerCalendars.txt","r").read().split("\n")
 
@@ -61,8 +62,10 @@ for group in outlook_navmod.NavigationGroups:
             if folder.DisplayName not in ignoredCalendars:
                 if " - " in folder.DisplayName:
                     calendarList.append(folder.DisplayName.split(" - ")[1])
+                    storeIdDict[folder.DisplayName.split(" - ")[1]] = folder.Folder.StoreID
                 else:
                     calendarList.append(folder.DisplayName)
+                    storeIdDict[folder.DisplayName] = folder.Folder.StoreID
                 
                 with open("recipientList.txt", 'a+') as f:
                             if " - " in folder.DisplayName:
@@ -71,11 +74,13 @@ for group in outlook_navmod.NavigationGroups:
                                 f.write(folder.DisplayName + "\n")
                             f.close()
 recipients = open("recipientList.txt","r").read().split("\n")
-for recipient in recipients:
-    try:
-        calendarDict[recipient] = namespace.GetSharedDefaultFolder(namespace.CreateRecipient(recipient),9)
-    except:
-        print("Finished scanning recipientList")
+for name in recipients:
+    recipient = namespace.CreateRecipient(name)
+    if recipient.Resolve():
+        try:
+            calendarDict[name] = namespace.GetSharedDefaultFolder(recipient,9)
+        except:
+            print("Couldn't resolve recipient: " + name)
 eventDict = {}
 
 @app.get("/")
@@ -116,11 +121,15 @@ class Event(BaseModel):
     styleOfCause:str
     eventDate:List[str]
     formName: str
+    plaintiffDefendant: bool
 
 @app.post("/add")
 async def addEvent(e:Event):
     event = calendarDict[e.targetFolder].Items.Add()
-    event.subject = e.jmlFileNum + " " + e.styleOfCause + " " + e.formName #still need to format event subject name
+    if e.plaintiffDefendant:
+        event.subject = e.jmlFileNum + " " + e.styleOfCause + " - " + e.eventDate[0] + " DUE - " + e.formName
+    else:
+        event.subject = e.jmlFileNum + " " + e.styleOfCause + " - DUE - " + e.formName
     event.body = "This is an automatically generated event using ProjectDA."
     event.location = "DAhandler - " + e.courtFileNum
     event.AllDayEvent = True
@@ -130,7 +139,10 @@ async def addEvent(e:Event):
 @app.post("/add/reminder")
 async def addEventReminder(e:Event):
     event = calendarDict[e.targetFolder].Items.Add()
-    event.subject = e.jmlFileNum + " " + e.styleOfCause + " " + e.eventDate[0] + " " +e.formName #still need to format event subject name
+    if e.plaintiffDefendant:
+        event.subject = e.jmlFileNum + " " + e.styleOfCause + " - " + e.eventDate[0] + " DUE - " + e.formName
+    else:
+        event.subject = e.jmlFileNum + " " + e.styleOfCause + " - " + e.eventDate[0] + " until DUE - " + e.formName
     event.body = "This is an automatically generated event using ProjectDA."
     event.location = "DAhandler - " + e.courtFileNum
     event.AllDayEvent = True
@@ -144,9 +156,9 @@ def inputEventDates(dates):
 
     eventDict["EXAMINATIONS FOR DISCOVERY"] = [["",dates["date3"]],["2 months",dates["rm1_date3"]],["1 month",dates["rm2_date3"]],["2 weeks",dates["rm3_date3"]],["1 week",dates["rm4_date3"]],["1 day",dates["rm5_date3"]]]
 
-    eventDict["TRIAL BRIEF, FORM 41, PLAINTIFF"] = [["",dates["date4"]],["1 month",dates["rm1_date4"]],["1 week",dates["rm2_date4"]]]
+    eventDict["TRIAL BRIEF, FORM 41(P)"] = [["PLAINTIFF",dates["date4"]],["1 month until PLAINTIFF",dates["rm1_date4"]],["1 week until PLAINTIFF",dates["rm2_date4"]]]
 
-    eventDict["TRIAL BRIEF, FORM 41, OP"] = [["",dates["date5"]],["1 month",dates["rm1_date5"]],["1 week",dates["rm2_date5"]]]
+    eventDict["TRIAL BRIEF, FORM 41(D)"] = [["DEFENDANT",dates["date5"]],["1 month until DEFENDANT",dates["rm1_date5"]],["1 week until DEFENDANT",dates["rm2_date5"]]]
 
     eventDict["NOTICE TO ADMIT, FORM 23"] = [["",dates["date6"]],["1 month",dates["rm1_date6"]],["2 weeks",dates["rm2_date6"]],["1 week",dates["rm3_date6"]],["1 day",dates["rm4_date6"]]]
 
@@ -176,7 +188,7 @@ async def delete(initDeleteObject:initDeleteObject):
         x = calendarDict[calendar]
         items = x.Items
         
-        itemsToDelete = [];
+        itemsToDelete = []
         for i in range(items.Count, 0, -1):
             if items.Item(i).location == caseNum:
                 itemsToDelete.append(items.Item(i).EntryID)
@@ -215,10 +227,13 @@ async def trueDelete(trueDelete:trueDelete):
     namespace.GetItemFromID(trueDelete.curItem,storeIdDict[trueDelete.calendar]).delete()
     return
 
+@app.get("/storeIDs")
+def getStoreIDs():
+    return storeIdDict
 
 @app.get("/calendars")
 def getCalendars():
-    return {"calendarList":calendarList,"lawyerCalendars":lawyerCalendars}
+    return {"calendarList":calendarList}
 
 '''
 CALCULATOR FUNCTION
@@ -234,7 +249,16 @@ def calc_dates(year,month,day):
 
 @app.get("/calcDates")
 def testCalcDates():
-    return calc_dates("2024","December","24")
+    return calc_dates("2024","12","24")
+
+'''
+lawyerCalendar functions
+'''
+@app.get("/lawyerCalendars/update")
+def updateLayerCalendars():
+    return open("lawyerCalendars.txt","r").read().split("\n")
+
+
 
 def serve():
     """Serve the web application."""

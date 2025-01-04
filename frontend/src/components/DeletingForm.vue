@@ -8,16 +8,29 @@ let deleteCalendars = ref([{"name":"Backend Not Running Yet.", key:"test"}]);
 let deleteCalendarsRemaining = ref([]);
 let selectedDeleteCalendars = ref([]); //Need to have Jana selected by default
 const allowedCalendars = [] //Add names here that you want to be able to delete from.
+const lawyerCalendars = ref([]);
+const loading = ref(false);
+$.ajax({
+    url:'http://127.0.0.1:8000/lawyerCalendars/update',
+    type:'get',
+    async:false,
+    success:function(e){
+        lawyerCalendars.value = e
+        console.log("Updated lawyer calendars...")
+    }
+})
 $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
     success:function(val) {
-        deleteCalendars.value = [];
+        deleteCalendars.value = [{name:"Calendar(jneria@jml.ca)",key:0}];
         for (let i = 0; i < val.calendarList.length; i++) {
-            if (val.lawyerCalendars.includes(val.calendarList[i])){
-                deleteCalendars.value.push({name:val.calendarList[i], key:i})
+            if (lawyerCalendars.value.includes(val.calendarList[i])){
+                deleteCalendars.value.push({name:val.calendarList[i], key:i+1})
             } else {
-                deleteCalendarsRemaining.value.push({name:val.calendarList[i], key:i})
+                if(val.calendarList[i]!="Calendar(jneria@jml.ca)"){
+                    deleteCalendarsRemaining.value.push({name:val.calendarList[i], key:i+1})
+                }
             }
             // if (val[i]==) if val[i](calendarname) == Jana's calendar, add to selectedDeleteCalendars and check her checkbox.
         }
@@ -34,6 +47,7 @@ function formSubmit(e){
     deleteTotal.value = 0;
     e.preventDefault();
     console.log("Delete events with caseFileNum: " + courtFile.value)
+    loading.value = true;
     $.ajax({
         url: 'http://127.0.0.1:8000/initDelete',
         type: 'post',
@@ -43,6 +57,7 @@ function formSubmit(e){
             calendars: selectedDeleteCalendars.value,
         }),
         success:function(e){
+            loading.value = false;
             let deleteDictKeys = Object.keys(e.deleteDict) //deleteDict = {"calendar_name":128,"calendar2_name":64}
             for (let i = 0; i < deleteDictKeys.length; i++){
                 deleteTotal.value+=e.deleteDict[deleteDictKeys[i]].length;
@@ -104,7 +119,9 @@ const toggle = (event) => {
                     </div>
                 </div>
                 
-                <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="button" v-on:click="toggle" style="display:flex;align-items: center;gap:5px;"><i class="pi pi-bars"></i> Other calendar(s)</button>
+                <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="button" v-on:click="toggle" style="display:flex;align-items: center;gap:5px;">
+                    <i class="pi pi-bars"></i> Other calendar(s)
+                </button>
                 <Popover ref="op">
                     <div class="flex flex-col gap-2" id="calendarListRemaining">
                         <div v-for="deleteCalendar of deleteCalendarsRemaining" :key="deleteCalendar.key" class="flex items-center gap-2">
@@ -117,7 +134,12 @@ const toggle = (event) => {
         </div>
 
         <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Delete</button>
-        <div>{{ deleteProgress }}/{{ deleteTotal }}</div>
+        <Transition>
+            <div v-if="!loading">Progress: {{ deleteProgress }}/{{ deleteTotal }}</div>
+        </Transition>
+        <Transition>
+            <div v-if="loading">Progress: <i class="pi pi-spin pi-spinner"></i></div>
+        </Transition>
     </form>
 </template>
 

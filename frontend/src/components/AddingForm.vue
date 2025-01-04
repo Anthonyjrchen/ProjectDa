@@ -15,7 +15,7 @@ const progressPercentage = ref(0);
 let calendars = ref([{"name":"Backend Not Running Yet.", key:"test"}]);
 
 const selectedCalendars = ref([]);
-
+let lawyerCalendars = [];
 $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
@@ -24,7 +24,7 @@ $.ajax({
         for (let i = 0; i < val.calendarList.length; i++) {
             calendars.value.push({name:val.calendarList[i], key:i})
         }
-    console.log(val)
+        console.log(val)
     }
 })
 
@@ -35,14 +35,23 @@ function formSubmit(e){
     addTotal.value = 0;
     progressPercentage.value = 0;
     $.ajax({
-        url: 'http://127.0.0.1:8000/initiateAdd',
-        type: 'post',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            date: formattedDate,
-            calendars: selectedCalendars.value,
-        }),
+        url:'http://127.0.0.1:8000/lawyerCalendars/update',
+        type:'get',
+        async:false,
         success:function(e){
+            lawyerCalendars = e
+            console.log("Updated lawyer calendars...")
+        }
+    })
+    $.ajax({
+       url: 'http://127.0.0.1:8000/initiateAdd',
+       type: 'post',
+       contentType: 'application/json',
+       data: JSON.stringify({
+           date: formattedDate,
+           calendars: selectedCalendars.value,
+       }),
+      success:function(e){
             // return {
             // "splitDate":splitDate,
             // "eventDict":eventDict,
@@ -57,10 +66,16 @@ function formSubmit(e){
             //          addEventReminder(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,reminderDay, eventKey) #add due dates and reminders (paralegal and self)        
             addTotal.value += 64*e.validCalendars.length;
             const eventDictKeys = Object.keys(e.eventDict);
+            console.log(e.eventDict);
             for (let j = 0; j < e.validCalendars.length; j++) {
                 for (let i = 0; i < eventDictKeys.length; i++) {
                     
                     var eventDates = e.eventDict[eventDictKeys[i]];
+                    let plaintiffDefendant = eventDictKeys[i].substring(eventDictKeys[i].length - 3)=="(P)" || eventDictKeys[i].substring(eventDictKeys[i].length - 3)=="(D)"
+                    let formName = eventDictKeys[i];
+                    if (plaintiffDefendant) {
+                        formName  = eventDictKeys[i].substring(0,eventDictKeys[i].length-3)
+                    }
                     $.ajax({
                         url: 'http://127.0.0.1:8000/add',
                         type: 'post',
@@ -71,31 +86,36 @@ function formSubmit(e){
                             jmlFileNum: jmlFile.value,
                             styleOfCause: styleOfCause.value,
                             eventDate:eventDates[0],
-                            formName:eventDictKeys[i],
+                            formName:formName,
+                            plaintiffDefendant:plaintiffDefendant,
                         }),
                         success(e){
                             addProgress.value++;
                             progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
                         }
                     })
-                    for (let x = 1; x < eventDates.length; x++) {
-                        $.ajax({
-                            url: 'http://127.0.0.1:8000/add/reminder',
-                            type: 'post',
-                            contentType: 'application/json',
-                            data: JSON.stringify({
-                                targetFolder: e.validCalendars[j],
-                                courtFileNum: courtFile.value,
-                                jmlFileNum: jmlFile.value,
-                                styleOfCause: styleOfCause.value,
-                                eventDate: eventDates[x],
-                                formName:eventDictKeys[i],
-                            }),
-                            success(e){
-                                addProgress.value++;
-                                progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
-                            }
-                        })
+                    if(!lawyerCalendars.includes(e.validCalendars[j])){
+                        console.log(e.validCalendars[j] + " is a lawyer.")
+                        for (let x = 1; x < eventDates.length; x++) {
+                            $.ajax({
+                                url: 'http://127.0.0.1:8000/add/reminder',
+                                type: 'post',
+                                contentType: 'application/json',
+                                data: JSON.stringify({
+                                    targetFolder: e.validCalendars[j],
+                                    courtFileNum: courtFile.value,
+                                    jmlFileNum: jmlFile.value,
+                                    styleOfCause: styleOfCause.value,
+                                    eventDate: eventDates[x],
+                                    formName:formName,
+                                    plaintiffDefendant:plaintiffDefendant,
+                                }),
+                                success(e){
+                                    addProgress.value++;
+                                    progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
+                                }
+                            })
+                        }
                     }
                 } 
             }
@@ -135,7 +155,7 @@ function formSubmit(e){
         </div>
         
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
-        <div>{{ addProgress }}/{{ addTotal }}</div>
+        <div>Progress: {{ addProgress }}/{{ addTotal }}</div>
         <ProgressBar :value="progressPercentage"></ProgressBar>
     </form>
 </template>
