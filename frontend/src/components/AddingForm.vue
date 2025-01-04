@@ -155,8 +155,8 @@ function formSubmit(e){
         </div>
         
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
-        <div class="mt-3">Progress: {{ addProgress }}/{{ addTotal }}</div>
-        <ProgressBar :value="progressPercentage" :class="bg-white"></ProgressBar>
+        <div class="mt-2">Progress: {{ addProgress }}/{{ addTotal }}</div>
+        <ProgressBar :value="progressPercentage" :class="'custom-progress-bar'"></ProgressBar>
     </form>
 </template>
 
@@ -176,5 +176,8 @@ h2 {
     transition: width 1s ease-in-out;
 }
 
+.custom-progress-bar {
+    background-color: #fab0ba !important;
+}
 
 </style>

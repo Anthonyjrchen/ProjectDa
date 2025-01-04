@@ -4,13 +4,14 @@ import $ from 'jquery';
 </script>
 
 <template>
+    <!-- use DataTable PrimeVue or just fix the header thing -->
     <div class="table-container">
         <table class="scrollable-table">
             <thead>
                 <tr class="headers bg-brink-pink text-light-pink">
-                    <th class="!border-[1px] !border-light-pink bg-brink-pink text-light-pink">Form Name</th>
-                    <th class="!border-[1px] !border-light-pink bg-brink-pink text-light-pink">Due Date</th>
-                    <th class="!border-[1px] !border-light-pink bg-brink-pink text-light-pink">Reminder Dates</th>
+                    <th class=" bg-brink-pink text-light-pink">Form Name</th>
+                    <th class=" bg-brink-pink text-light-pink">Due Date</th>
+                    <th class=" bg-brink-pink text-light-pink">Reminder Dates</th>
                 </tr>
             </thead>
             <tbody>
@@ -417,15 +418,10 @@ tr:hover {
 }
 
 th {
-    border: 1px solid #fcbec8;
     padding: 0.5rem 1rem;
     text-align: center;
     font-weight: 900;
 }
-
-/*thead {
-    position: fixed;
-} */
 
 td {
     border: 1px solid #fcbec8;
@@ -444,12 +440,21 @@ p {
   overflow-x: auto;
   overflow-y: auto;
   height: 800px; /* Fixed height for scrolling */
-  border: 0.5px solid #fb607f;
+  
 }
 
-.table-container thead th {
+.table-container thead {
+    position:sticky;
+    top:0;
+    border: 2px solid #fb607f !important;
+    border-top-left-radius: 7px !important;
+    border-top-right-radius: 7px !important;
+}
+
+.table-container thead tr th {
     position: sticky;
     top: 0;
+    
 }
 
 .scrollable-table {

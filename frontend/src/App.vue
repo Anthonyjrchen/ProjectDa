@@ -18,7 +18,7 @@ import logo from "./assets/images/DAhandlerTransparent.png"
 
 <div class="app-container">
   <div class="card flex justify-content-center">
-    <Drawer visible :modal="false" :fullScreen="false" :position="'left'" :mask="false" :closable="false">
+    <Drawer style="border-left:0;border-top:0;border-bottom:0;" visible :modal="false" :fullScreen="false" :position="'left'" :mask="false" :closable="false" :class="sidebar">
         <div class="flex flex-column h-full">
           <div class="flex align-items-center justify-content-between px-4 pt-3 flex-shrink-0">
             <span class="inline-flex align-items-center gap-2">
@@ -104,6 +104,7 @@ import logo from "./assets/images/DAhandlerTransparent.png"
 .p-drawer .p-drawer-content {
   position: static;
   padding: 0;
+  background-color: #3d1222 !important;
 }
 
 .p-drawer li {
@@ -113,12 +114,12 @@ import logo from "./assets/images/DAhandlerTransparent.png"
   padding-bottom: 0px;
 }
 
-
 .main-content {
   flex-grow: 1;
   padding: 1rem;
   margin-left: 350px;
   overflow: auto;
+  background-color: #18181a !important;
 }
 
 .p-drawer-header {
