@@ -259,7 +259,28 @@ lawyerCalendar functions
 def updateLayerCalendars():
     return open("lawyerCalendars.txt","r").read().split("\n")
 
+'''
+setting functions
+'''
+@app.get("/settings")
+def retrieveSettings():
+    with open("holidays.txt", "r") as f1:
+        holidays = f1.read()
+    with open("ignoredCalendars.txt", "r") as f2:
+        ignoredCalendars = f2.read()
+    with open("lawyerCalendars.txt", "r") as f3:
+        lawyerCalendars = f3.read()
+    
+    return {"holidays": holidays, "ignoredCalendars": ignoredCalendars, "lawyerCalendars": lawyerCalendars}
 
+@app.get("/settings/update")
+def updateSettings(holidays:str,ignoredCalendars:str,lawyerCalendars:str):
+    with open("holidays.txt", "w") as f1:
+        f1.write(holidays)
+    with open("ignoredCalendars.txt", "w") as f2:
+        f2.write(ignoredCalendars)
+    with open("lawyerCalendars.txt", "w") as f3:
+        f3.write(lawyerCalendars)
 
 def serve():
     """Serve the web application."""

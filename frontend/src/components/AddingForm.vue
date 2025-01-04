@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import DatePicker from 'primevue/datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
-import $, { event } from 'jquery';
+import $ from 'jquery';
 
 const date = ref(null);
 const jmlFile = ref('');
