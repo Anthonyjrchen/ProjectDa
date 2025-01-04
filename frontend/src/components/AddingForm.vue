@@ -172,12 +172,14 @@ h2 {
     height: 40px;
 }
 
-.p-progressbar-determinate .p-progressbar-value-animate {
-    transition: width 1s ease-in-out;
-}
 
 .custom-progress-bar {
-    background-color: #fab0ba !important;
+    background-color: #272526 !important;
+    width: 186px;
+    border: 2px solid #fb607f !important;
+    padding: 10px;
 }
+
+
 
 </style>

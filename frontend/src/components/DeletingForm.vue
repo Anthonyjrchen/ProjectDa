@@ -173,8 +173,10 @@ h2 {
 }
 
 .custom-progress-bar {
-    background-color: #fab0ba !important;
-    width: 220px;
+    background-color: #272526 !important;
+    width: 185px;
+    border: 2px solid #fb607f !important;
+    padding: 10px;
 }
 
 </style>
