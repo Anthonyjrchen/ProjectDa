@@ -168,10 +168,6 @@ h2 {
   gap: 300px;
 }
 
-.subContainer {
-
-}
-
 .custom-progress-bar {
     background-color: #272526 !important;
     width: 185px;

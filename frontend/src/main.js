@@ -19,7 +19,7 @@ app.component('ProgressBar', ProgressBar)
 app.use(router)
 app.use(PrimeVue, {
     theme: {
-        preset: Aura
+        preset: Aura,
     },
     ripple: true
 });
