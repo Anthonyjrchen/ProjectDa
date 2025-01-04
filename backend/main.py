@@ -133,7 +133,7 @@ async def addEvent(e:Event):
     event.body = "This is an automatically generated event using ProjectDA."
     event.location = "DAhandler - " + e.courtFileNum
     event.AllDayEvent = True
-    event.start = e.eventDate[1] # Ensure date is formatted as e.g. 2018-01-09)
+    event.start = e.eventDate[1] # Ensure date is formatted as e.g. 2018-01-09
     event.save()
     
 @app.post("/add/reminder")
@@ -146,7 +146,7 @@ async def addEventReminder(e:Event):
     event.body = "This is an automatically generated event using ProjectDA."
     event.location = "DAhandler - " + e.courtFileNum
     event.AllDayEvent = True
-    event.start = e.eventDate[1] # Ensure date is formatted as e.g. 2018-01-09)
+    event.start = e.eventDate[1] # Ensure date is formatted as e.g. 2018-01-09
     event.save() 
 
 def inputEventDates(dates):
@@ -247,9 +247,10 @@ def calc_dates(year,month,day):
 
     return string_dates
 
+
 @app.get("/calcDates")
-def testCalcDates():
-    return calc_dates("2024","12","24")
+async def testCalcDates(year:str,month:str,day:str):
+    return calc_dates(year,month,day)
 
 '''
 lawyerCalendar functions

@@ -1,23 +1,27 @@
 <script setup>
-
-import AddingForm from '../components/AddingForm.vue'
+import { ref, provide  } from 'vue';
+import AddingForm from '../components/AddingForm.vue';
 import CalendarView from '@/components/CalendarView.vue';
-import DeletingForm from '@/components/DeletingForm.vue';
-
+const date=ref('Your Mom');
+function receiveEmit(e) {
+  date.value = e.toISOString().split('T')[0];
+  console.log("Received emit: " + e.toISOString().split('T')[0]);
+}
+provide('selectedDate', date);
 </script>
 
 <template>
   <main>
     <div class="container">
       <div class="addingForm">
-        <AddingForm />
+        <AddingForm @dateChanged="receiveEmit"/>
       </div>
 
   
     
 
       <div class="calendarView">
-        <CalendarView />
+        <CalendarView :selectedDate="date"/>
       </div>
     </div>
 
