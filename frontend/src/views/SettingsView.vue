@@ -70,25 +70,28 @@ function saveTexts() {
     <div class="grid">
         <div class="col">
             <div class="text-center p-3 border-round-sm bg-azalea font-bold mb-[20px] mt-[15px]">
-                <h1>
-                    Holidays (YYYY-MM-DD)
+                <h1 class="m-0">
+                    Holidays 
                 </h1>
+                <p class="m-0">(YYYY-MM-DD)</p>
             </div>
             <Textarea v-model="holidaysText" rows="20" cols="20"></Textarea>
         </div>
         <div class="col">
             <div class="text-center p-3 border-round-sm bg-azalea font-bold mb-[20px] mt-[15px]">
-                <h1>
+                <h1 class="m-0">
                     Ignored Calendars
                 </h1>
+                <p class="m-0">(Calendar Display Name)</p>
             </div>
             <Textarea v-model="ignoredCalendersText" rows="20" cols="20"></Textarea>
         </div>
         <div class="col">
             <div class="text-center p-3 border-round-sm bg-azalea font-bold mb-[20px] mt-[15px]">
-                <h1>
+                <h1 class="m-0">
                     Lawyers
                 </h1>
+                <p class="m-0">(Calendar Display Name)</p>
             </div>
             <Textarea v-model="lawyerCalendarsText" rows="20" cols="20"></Textarea>
         </div>

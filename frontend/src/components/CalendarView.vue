@@ -102,7 +102,7 @@ watch(selectedDate, (newVal, oldVal) => {
 </script>
 
 <template>
-    <!-- use DataTable PrimeVue or just fix the header thing -->
+    <!-- add icons -->
     <div class="table-container">
         <table class="scrollable-table">
             <thead class="bg-brink-pink text-light-pink">
