@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import calculator
 import time
 import uvicorn
+import smtplib
+from email.mime.text import MIMEText
 
 app = FastAPI()
 
@@ -281,6 +283,23 @@ def updateSettings(holidays:str,ignoredCalendars:str,lawyerCalendars:str):
         f2.write(ignoredCalendars)
     with open("lawyerCalendars.txt", "w") as f3:
         f3.write(lawyerCalendars)
+
+'''
+contact support route
+'''
+@app.get("/support/contact")
+async def contactSupport(subject:str,body:str):
+    #email support email
+    print("at least started the contactSupport method")
+    recipients = ["anthonyjrchen@gmail.com","danangelaneria@gmail.com"]
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = "meepmoop1322@gmail.com"
+    msg['To'] = ', '.join(recipients)
+    with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp_server:
+        smtp_server.login("meepmoop1322@gmail.com","iwkw onob xprd lhad")
+        smtp_server.sendmail("meepmoop1322@gmail.com",recipients,msg.as_string()) 
+    return subject + "-" + body
 
 def serve():
     """Serve the web application."""
