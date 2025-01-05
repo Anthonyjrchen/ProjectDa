@@ -1,7 +1,7 @@
 <script setup>
 import { ref, provide  } from 'vue';
 import AddingForm from '../components/AddingForm.vue';
-import CalendarView from '@/components/CalendarView.vue';
+import CalendarView from '@/components/CalculatorView.vue';
 const date=ref('Your Mom');
 function receiveEmit(e) {
   date.value = e.toISOString().split('T')[0];

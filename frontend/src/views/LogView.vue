@@ -22,10 +22,10 @@ const confirm1 = (event) => {
             label: 'Clear'
         },
         accept: () => {
-            toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+            toast.add({ severity: 'info', summary: 'Cleared', detail: 'Logs cleared.', life: 3000 });
         },
         reject: () => {
-            toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+            toast.add({ severity: 'error', summary: 'Cancelled', detail: 'Did not clear logs.', life: 3000 });
         }
     });
 };
@@ -52,7 +52,7 @@ const confirm1 = (event) => {
     </div>
     <div class="buttonWrap">
         <Toast />
-        <ConfirmDialog closable="false"></ConfirmDialog>
+        <ConfirmDialog class="pt-5"></ConfirmDialog>
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea" @click="confirm1($event)" label="Clear">Clear</button>
     </div>
 </template>
@@ -90,5 +90,6 @@ textarea {
     right: 50px; /* Adjust to position horizontally */
     bottom: 20px; /* Adjust for vertical positioning */
 }
+
 
 </style>

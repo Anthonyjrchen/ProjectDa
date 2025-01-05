@@ -1,6 +1,6 @@
 <script setup>
 
-import AntoProfile from '@/components/AntoProfile.vue';
+import AntoProfile from '@/components/Profiles.vue';
 
 </script>
 
