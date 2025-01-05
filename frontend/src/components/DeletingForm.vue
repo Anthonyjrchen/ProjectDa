@@ -168,11 +168,18 @@ h2 {
   gap: 300px;
 }
 
-.custom-progress-bar {
-    background-color: #272526 !important;
-    width: 185px;
+.p-progressbar {
     border: 2px solid #fb607f !important;
-    padding: 10px;
+    background-color: #272526 !important;
+    width: 186px;
+    height: 25px;
 }
+
+.p-progressbar-value {
+    background-color: #fb607f !important;
+    width: 186px;
+    transition: width 0.05s ease; /* Smooth transition */
+}
+
 
 </style>

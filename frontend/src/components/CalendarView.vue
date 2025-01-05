@@ -602,5 +602,12 @@ p {
     }
 } 
 
+table h3::before {
+    font-family: 'PrimeIcons';
+    content: '\e958'; /* Use a Unicode character or icon */
+    margin-right: 8px; /* Spacing between icon and text */
+    color: #fb607f; /* Optional styling for the icon */
+    font-size: 1.5em; /* Adjust icon size */
+}
  
 </style>
