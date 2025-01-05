@@ -108,7 +108,7 @@ const toggle = (event) => {
             <div class="subContainer">
                 <div class="courtFileNumInput">
                     <h2>Court File No.</h2>
-                    <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[1px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
+                    <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[2px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
                 </div>
                 <div class="mt-3">
                     <button class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea" type="submit">Delete</button>

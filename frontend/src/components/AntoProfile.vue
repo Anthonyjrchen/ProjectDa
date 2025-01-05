@@ -61,8 +61,8 @@ function onFormSubmit(){
             <InputText v-model="subject" id="subject" class="flex-auto" autocomplete="off" />
         </div>
         <div class="flex items-center gap-4" mb-4>
-            <label for="body" class="font-semibold w-24">Body</label>
-            <InputText v-model="body" id="body" class="flex-auto" autocomplete="off" />
+            <label for="body" class="font-semibold w-24 mb-1">Body</label>
+            <InputText v-model="body" id="body" class="flex-auto text-left align-top h-[200px]" autocomplete="off" />
         </div>
         <Button type="button" label="Save" class="right-5 mt-3" style="position:absolute;" @click="onFormSubmit"></Button>
     </Dialog>
@@ -124,5 +124,14 @@ a {
 
 button:hover, a:hover {
     opacity: 0.7;
+}
+
+textarea {
+    padding: 10px; /* Adjust the padding if needed */
+    line-height: 1.5; /* Adjust line height */
+    vertical-align: top; /* Align text to the top */
+    resize: none; /* To prevent resizing */
+    width: 100%;
+    height: 100%;
 }
 </style>
