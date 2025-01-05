@@ -121,6 +121,17 @@ function formSubmit(e){
             }
         }
     });
+
+
+    // var interval = setInterval(() => {
+    //     randomFunction();
+    // }, (200));
+    // function randomFunction(){
+    //     progressPercentage.value++;
+    //     if(progressPercentage>=100) {
+    //         clearInterval(interval)
+    //     }
+    // }
 };
 </script>
 
@@ -156,7 +167,7 @@ function formSubmit(e){
         
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
         <div class="mt-2">Progress: {{ addProgress }}/{{ addTotal }}</div>
-        <ProgressBar :value="progressPercentage" :class="'custom-progress-bar'"></ProgressBar>
+        <ProgressBar :value="progressPercentage" :class="'custom-progress-bar'"></ProgressBar> <!--progressPercentage-->
     </form>
 </template>
 
@@ -172,12 +183,17 @@ h2 {
     height: 40px;
 }
 
-
-.custom-progress-bar {
+.p-progressbar {
+    border: 2px solid #fb607f !important;
     background-color: #272526 !important;
     width: 186px;
-    border: 2px solid #fb607f !important;
-    padding: 10px;
+    height: 25px;
+}
+
+.p-progressbar-value {
+    background-color: #fb607f !important;
+    width: 186px;
+    transition: width 0.005s ease; /* Smooth transition */
 }
 
 
