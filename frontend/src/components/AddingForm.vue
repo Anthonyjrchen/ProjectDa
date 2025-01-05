@@ -95,7 +95,7 @@ function formSubmit(e){
                         }
                     })
                     if(!lawyerCalendars.includes(e.validCalendars[j])){
-                        console.log(e.validCalendars[j] + " is a lawyer.")
+                        console.log(e.validCalendars[j] + " is not a lawyer.")
                         for (let x = 1; x < eventDates.length; x++) {
                             $.ajax({
                                 url: 'http://127.0.0.1:8000/add/reminder',
@@ -116,6 +116,8 @@ function formSubmit(e){
                                 }
                             })
                         }
+                    } else {
+                        console.log(e.validCalendars[j] + " is not a lawyer.")
                     }
                 } 
             }

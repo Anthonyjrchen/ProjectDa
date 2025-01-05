@@ -60,9 +60,9 @@ function onFormSubmit(){
             <label for="subject" class="font-semibold w-24">Subject</label>
             <InputText v-model="subject" id="subject" class="flex-auto" autocomplete="off" />
         </div>
-        <div class="flex items-center gap-4" mb-4>
-            <label for="body" class="font-semibold w-24 mb-1">Body</label>
-            <InputText v-model="body" id="body" class="flex-auto text-left align-top h-[200px]" autocomplete="off" />
+        <div class="flex items-start gap-4 mb-4">
+            <label for="body" class="font-semibold w-24">Body</label>
+            <Textarea v-model="body" rows="4" cols="65" style="resize:none"></Textarea>
         </div>
         <Button type="button" label="Save" class="right-5 mt-3" style="position:absolute;" @click="onFormSubmit"></Button>
     </Dialog>
