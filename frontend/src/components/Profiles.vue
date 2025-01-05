@@ -98,6 +98,11 @@ function onFormSubmit(){
     border: 5px solid #faccd6 !important;
 }
 
+.dana, .anto {
+    max-width: 90%;
+    margin-bottom: 20px;
+  }
+
 .myButton {
     margin-top: 55%;
 }
