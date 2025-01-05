@@ -1,14 +1,14 @@
 <script setup>
 
-import AntoProfile from '@/components/Profiles.vue';
+import Profile from '@/components/Profiles.vue';
 
 </script>
 
 <template>
   <main>
     <div class="container">
-      <div class="antoProfile">
-        <AntoProfile />
+      <div class="Profile">
+        <Profile />
       </div>
     </div>
   </main>

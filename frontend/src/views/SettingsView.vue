@@ -104,7 +104,7 @@ function saveTexts() {
                 </h1>
                 <p class="m-0">(YYYY-MM-DD)</p>
             </div>
-            <Textarea v-model="holidaysText" rows="20" cols="20"></Textarea>
+            <Textarea v-model="holidaysText" rows="20" cols="20" spellcheck="false"></Textarea>
         </div>
         <div class="col">
             <div class="text-center p-3 border-round-sm bg-azalea font-bold mb-[20px] mt-[15px]">
@@ -113,7 +113,7 @@ function saveTexts() {
                 </h1>
                 <p class="m-0">(Calendar Display Name)</p>
             </div>
-            <Textarea v-model="ignoredCalendersText" rows="20" cols="20"></Textarea>
+            <Textarea v-model="ignoredCalendersText" rows="20" cols="20" spellcheck="false"></Textarea>
         </div>
         <div class="col">
             <div class="text-center p-3 border-round-sm bg-azalea font-bold mb-[20px] mt-[15px]">
@@ -122,7 +122,7 @@ function saveTexts() {
                 </h1>
                 <p class="m-0">(Calendar Display Name)</p>
             </div>
-            <Textarea v-model="lawyerCalendarsText" rows="20" cols="20"></Textarea>
+            <Textarea v-model="lawyerCalendarsText" rows="20" cols="20" spellcheck="false"></Textarea>
         </div>
     </div>
     <div class="buttonWrap">

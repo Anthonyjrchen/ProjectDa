@@ -64,7 +64,7 @@ function clearLogs() {
                     Adding Log 
                 </h1>
             </div>
-            <Textarea v-model="addLogText" rows="20" cols="20"></Textarea>
+            <Textarea v-model="addLogText" rows="20" cols="20" spellcheck="false"></Textarea>
         </div>
         <div class="col">
             <div class="text-center p-3 border-round-sm bg-azalea font-bold mb-[20px] mt-[15px]">
@@ -72,12 +72,12 @@ function clearLogs() {
                     Deleting Log
                 </h1>
             </div>
-            <Textarea v-model="deleteLogText" rows="20" cols="20"></Textarea>
+            <Textarea v-model="deleteLogText" rows="20" cols="20" spellcheck="false"></Textarea>
         </div>
     </div>
     <div class="buttonWrap">
         <Toast />
-        <ConfirmDialog class="pt-5"></ConfirmDialog>
+        <ConfirmDialog class="pt-5" :showHeader="false"></ConfirmDialog>
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea" @click="confirm1($event)" label="Clear">Clear</button>
     </div>
 </template>
@@ -96,6 +96,7 @@ function clearLogs() {
     justify-content: flex-start;
     align-items: stretch;
 }
+
 
 h1 {
     font-size: x-large;

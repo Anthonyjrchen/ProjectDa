@@ -5,6 +5,7 @@ import anto from '../assets/images/anto.jpg';
 import dana from '../assets/images/dana.jpeg';import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
+import Textarea from 'primevue/textarea';
 import $ from 'jquery';
 const visible = ref(false);
 const subject = ref('');
@@ -54,8 +55,10 @@ function onFormSubmit(){
         </div>
     </div>
 
-    <Dialog v-model:visible="visible" modal header="Edit Profile" class="w-[700px] h-[600px]">
-        <span class="text-surface-500 dark:text-surface-400 block mb-8">Update your information.</span>
+    <Dialog v-model:visible="visible" modal class="w-[700px] h-[600px]">
+        <template #header>
+            <span class="text-3xl text-surface-500 dark:text-surface-400 block mb-4 mt-4">Submit Ticket</span>
+        </template>
         <div class="flex items-center gap-4 mb-4">
             <label for="subject" class="font-semibold w-24">Subject</label>
             <InputText v-model="subject" id="subject" class="flex-auto" autocomplete="off" />
@@ -138,5 +141,12 @@ textarea {
     resize: none; /* To prevent resizing */
     width: 100%;
     height: 100%;
+    border:#e7788e 1px solid !important;
+    background-color: white !important;
+}
+
+.p-dialog-content {
+    
+    background-color: black !important;
 }
 </style>
