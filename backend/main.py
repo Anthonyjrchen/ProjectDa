@@ -195,6 +195,7 @@ async def delete(initDeleteObject:initDeleteObject):
             if items.Item(i).location == caseNum:
                 itemsToDelete.append(items.Item(i).EntryID)
         deleteDict[calendar] = itemsToDelete
+        print("Found " + str(len(itemsToDelete)) + " items to delete in " + calendar)
     t1 = time.time()
 
     print(t1-t0)

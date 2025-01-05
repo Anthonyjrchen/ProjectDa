@@ -6,8 +6,7 @@ import Popover from 'primevue/popover';
 
 let deleteCalendars = ref([{"name":"Backend Not Running Yet.", key:"test"}]);
 let deleteCalendarsRemaining = ref([]);
-let selectedDeleteCalendars = ref([]); //Need to have Jana selected by default
-const allowedCalendars = [] //Add names here that you want to be able to delete from.
+let selectedDeleteCalendars = ref(["Calendar(jneria@jml.ca)"]); //Need to have Jana selected by default
 const lawyerCalendars = ref([]);
 const loading = ref(false);
 $.ajax({
@@ -23,7 +22,7 @@ $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
     success:function(val) {
-        deleteCalendars.value = [{name:"Calendar(jneria@jml.ca)",key:0}];
+        deleteCalendars.value = [];
         for (let i = 0; i < val.calendarList.length; i++) {
             if (lawyerCalendars.value.includes(val.calendarList[i])){
                 deleteCalendars.value.push({name:val.calendarList[i], key:i+1})
@@ -60,9 +59,10 @@ function formSubmit(e){
         }),
         success:function(e){
             loading.value = false;
-            let deleteDictKeys = Object.keys(e.deleteDict) //deleteDict = {"calendar_name":128,"calendar2_name":64}
+            let deleteDictKeys = Object.keys(e.deleteDict) //deleteDict = {"calendar_name":[item1.entryID,item2.entryID,item3.entryID],"calendar2_name":[item1.entryID,item2.entryID]} the number represents how many items to delete.
             for (let i = 0; i < deleteDictKeys.length; i++){
                 deleteTotal.value+=e.deleteDict[deleteDictKeys[i]].length;
+                console.log("Found " + e.deleteDict[deleteDictKeys[i]].length + " in " + deleteDictKeys[i])
             }
 
             for (let i = 0; i < deleteDictKeys.length; i++){
@@ -86,14 +86,7 @@ function formSubmit(e){
     });
 };
 const op = ref();
-const members = ref([
-    { name: 'Amy Elsner', image: 'amyelsner.png', email: 'amy@email.com', role: 'Owner' },
-    { name: 'Bernardo Dominic', image: 'bernardodominic.png', email: 'bernardo@email.com', role: 'Editor' },
-    { name: 'Ioni Bowcher', image: 'ionibowcher.png', email: 'ioni@email.com', role: 'Viewer' }
-]);
-
 const toggle = (event) => {
-    console.log('hi')
     op.value.toggle(event);
 }
 </script>
@@ -130,6 +123,10 @@ const toggle = (event) => {
                 <h2 class="mt-2">Choose which calendar(s)</h2>
                 <div class="card flex justify-left">
                     <div class="flex flex-col gap-2" id="calendarList">
+                        <div :key="0" class="flex items-center gap-2">
+                            <Checkbox  class="deleteCalendarCheckbox" v-model="selectedDeleteCalendars" :inputId="0" name="deleteCalendar" :value="'Calendar(jneria@jml.ca)'" />
+                            <label :for="0">Calendar(jneria@jml.ca)</label> <!-- Jana's checkbox (starts off as checked) -->
+                        </div>
                         <div v-for="deleteCalendar of deleteCalendars" :key="deleteCalendar.key" class="flex items-center gap-2">
                             <Checkbox class="deleteCalendarCheckbox" v-model="selectedDeleteCalendars" :inputId="deleteCalendar.key" name="deleteCalendar" :value="deleteCalendar.name" />
                             <label :for="deleteCalendar.key">{{ deleteCalendar.name }}</label>

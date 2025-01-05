@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import DatePicker from 'primevue/datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
 import $ from 'jquery';
 
+const addLoading = ref(false);
 const date = ref(null);
 const jmlFile = ref('');
 const courtFile = ref('');
@@ -13,8 +14,8 @@ const addProgress = ref(0);
 const addTotal = ref(0);
 const progressPercentage = ref(0);
 let calendars = ref([{"name":"Backend Not Running Yet.", key:"test"}]);
-
-const selectedCalendars = ref([]);
+let watchEnder;
+const selectedCalendars = ref(["Calendar(jneria@jml.ca)"]);
 let lawyerCalendars = [];
 $.ajax({
     url:'http://localhost:8000/calendars',
@@ -52,19 +53,21 @@ function formSubmit(e){
            calendars: selectedCalendars.value,
        }),
       success:function(e){
-            // return {
-            // "splitDate":splitDate,
-            // "eventDict":eventDict,
-            // "validCalendars":validCalendars,
-            // }  this is /initiateAdd 's return value.
-            
-            // for calendar in validCalendars:
-            //  for eventKey in eventDictKeys:
-            //      eventDates = eventDict[eventKey]
-            //      addEvent(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,eventDates.pop(0), eventKey) #add due dates (lawyers and paralegal and self) (targetFolder, courtFileNum, jmlFileNum, styleOfCause, eventDate, formName) is the format for calling addEvent
-            //      for reminderDay in eventDates:
-            //          addEventReminder(calendarDict[calendar],userEvent.courtFileNum, userEvent.jmlFileNum, userEvent.styleOfCause,reminderDay, eventKey) #add due dates and reminders (paralegal and self)        
-            addTotal.value += 64*e.validCalendars.length;
+            addLoading.value = true;
+            watchEnder = watch(progressPercentage, (newVal, oldVal) => {
+                if(addProgress.value==addTotal.value) {
+                    console.log("Adding function complete")
+                    addLoading.value = false;
+                    watchEnder();
+                }
+            },);
+            e.validCalendars.forEach(function (e){
+                if(lawyerCalendars.includes(e)){
+                    addTotal.value+=14
+                } else {
+                    addTotal.value+=64
+                }
+            })
             const eventDictKeys = Object.keys(e.eventDict);
             console.log(e.eventDict);
             for (let j = 0; j < e.validCalendars.length; j++) {
@@ -117,7 +120,7 @@ function formSubmit(e){
                             })
                         }
                     } else {
-                        console.log(e.validCalendars[j] + " is not a lawyer.")
+                        console.log(e.validCalendars[j] + " is a lawyer.")
                     }
                 } 
             }
@@ -167,7 +170,7 @@ function formSubmit(e){
             </div> 
         </div>
         
-        <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
+        <Button :disabled="addLoading" class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</Button>
         <div class="mt-2">Progress: {{ addProgress }}/{{ addTotal }}</div>
         <ProgressBar :value="progressPercentage" :class="'custom-progress-bar'"></ProgressBar> <!--progressPercentage-->
     </form>
