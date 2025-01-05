@@ -9,6 +9,7 @@ import time
 import uvicorn
 import smtplib
 from email.mime.text import MIMEText
+import datetime
 
 app = FastAPI()
 
@@ -40,7 +41,7 @@ progress = 0
 with open("recipientList.txt", 'w') as f:
     f.write("")
     f.close()
-ignoredCalendars = open("ignoreCalendars.txt","r").read().split("\n")
+ignoredCalendars = open("ignoredCalendars.txt","r").read().split("\n")
 lawyerCalendars = open("lawyerCalendars.txt","r").read().split("\n")
 
 
@@ -301,6 +302,44 @@ async def contactSupport(subject:str,body:str):
         smtp_server.login("meepmoop1322@gmail.com","iwkw onob xprd lhad")
         smtp_server.sendmail("meepmoop1322@gmail.com",recipients,msg.as_string()) 
     return subject + "-" + body
+
+'''
+log route
+'''
+
+@app.get("/log")
+async def getLogEvent():
+    with open("addLog.txt", "r") as f1:
+        addLog = f1.read()
+    with open("deleteLog.txt", "r") as f2:
+        deleteLog = f2.read()
+    
+    return {"addLog": addLog, "deleteLog": deleteLog}
+
+class LogEvent(BaseModel):
+    isDeleteEvent: bool
+    message: str
+
+@app.post("/log")
+async def createLogEvent(e:LogEvent):
+    currentTime = str(datetime.datetime.now().strftime("%m/%d/%Y-%H:%M:%S"))
+    if not e.isDeleteEvent:
+        with open("addLog.txt", 'a+') as f:
+            f.write("[" + currentTime + "] " + e.message + "\n")
+            f.close()
+    else:
+        with open("deleteLog.txt", 'a+') as f:
+            f.write("[" + currentTime + "] " + e.message + "\n")
+            f.close()
+
+@app.post("/log/clear")
+async def createLogEvent():
+    with open("addLog.txt", 'w') as f:
+        f.write('')
+        f.close()
+    with open("deleteLog.txt", 'w') as f:
+        f.write('')
+        f.close()
 
 def serve():
     """Serve the web application."""

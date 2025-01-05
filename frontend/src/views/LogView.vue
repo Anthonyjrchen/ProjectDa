@@ -7,6 +7,8 @@ import { useToast } from "primevue/usetoast";
 
 const confirm = useConfirm();
 const toast = useToast();
+const addLogText = ref('');
+const deleteLogText = ref('');
 
 const confirm1 = (event) => {
     confirm.require({
@@ -23,12 +25,35 @@ const confirm1 = (event) => {
         },
         accept: () => {
             toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+            clearLogs()
         },
         reject: () => {
             toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         }
     });
 };
+
+function getLogs() {
+    $.ajax({
+        url:'http://localhost:8000/log',
+        type:'get',
+        success:function(e) {
+            addLogText.value = e.addLog
+            deleteLogText.value = e.deleteLog
+        }
+    });
+}
+getLogs()
+
+function clearLogs() {
+    $.ajax({
+        url:'http://localhost:8000/log/clear',
+        type:'post',
+        success:function() {
+            getLogs()
+        }
+    });
+}
 </script>
 
 <template>
@@ -39,7 +64,7 @@ const confirm1 = (event) => {
                     Adding Log 
                 </h1>
             </div>
-            <Textarea v-model="holidaysText" rows="20" cols="20"></Textarea>
+            <Textarea v-model="addLogText" rows="20" cols="20"></Textarea>
         </div>
         <div class="col">
             <div class="text-center p-3 border-round-sm bg-azalea font-bold mb-[20px] mt-[15px]">
@@ -47,7 +72,7 @@ const confirm1 = (event) => {
                     Deleting Log
                 </h1>
             </div>
-            <Textarea v-model="ignoredCalendersText" rows="20" cols="20"></Textarea>
+            <Textarea v-model="deleteLogText" rows="20" cols="20"></Textarea>
         </div>
     </div>
     <div class="buttonWrap">

@@ -29,6 +29,21 @@ $.ajax({
     }
 })
 
+function addEvent(msg) {
+    $.ajax({
+        url:'http://localhost:8000/log',
+        type:'post',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            isDeleteEvent: false,
+            message: msg
+        }),
+        success:function() {
+            // getLogs()   this CAN send emit to log page to reload logs (optional)
+        }
+    });
+}
+
 function formSubmit(e){
     const formattedDate = date.value.toISOString().split('T')[0];
     e.preventDefault();
@@ -59,6 +74,7 @@ function formSubmit(e){
                     console.log("Adding function complete")
                     addLoading.value = false;
                     watchEnder();
+                    // maybe add how long it takes for add function to complete? so like took x time to add styleOfCause to list[calendars]
                 }
             },);
             e.validCalendars.forEach(function (e){
@@ -71,6 +87,7 @@ function formSubmit(e){
             const eventDictKeys = Object.keys(e.eventDict);
             console.log(e.eventDict);
             for (let j = 0; j < e.validCalendars.length; j++) {
+                addEvent("Added due dates (and reminder dates) for " + styleOfCause.value + "(" + formattedDate + ") for the calendar: " + e.validCalendars[j])
                 for (let i = 0; i < eventDictKeys.length; i++) {
                     
                     var eventDates = e.eventDict[eventDictKeys[i]];
@@ -93,6 +110,7 @@ function formSubmit(e){
                             plaintiffDefendant:plaintiffDefendant,
                         }),
                         success(e){
+                            
                             addProgress.value++;
                             progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
                         }
