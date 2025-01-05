@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import $ from 'jquery';
 import Checkbox from 'primevue/checkbox';
 import Popover from 'primevue/popover';
@@ -58,6 +58,7 @@ const deleteProgress = ref(0);
 const deleteTotal = ref(0);
 const progressPercentage = ref(0);
 let watchEnder;
+const displayDeleteDict = ref([]);
 function formSubmit(e){
     deleteProgress.value = 0;
     deleteTotal.value = 0;
@@ -65,15 +66,6 @@ function formSubmit(e){
     e.preventDefault();
     console.log("Delete events with caseFileNum: " + courtFile.value)
     loading.value = true;
-    deleteLoading.value = true;
-    watchEnder = watch(progressPercentage, (newVal, oldVal) => {
-        if(deleteProgress.value==deleteTotal.value) {
-            console.log("Delete function complete")
-            deleteLoading.value = false;
-            watchEnder();
-            // maybe add how long it takes for add function to complete? so like took x time to add styleOfCause to list[calendars]
-        }
-    },);
     $.ajax({
         url: 'http://127.0.0.1:8000/initDelete',
         type: 'post',
@@ -85,8 +77,18 @@ function formSubmit(e){
         success:function(e){
             loading.value = false;
             let deleteDictKeys = Object.keys(e.deleteDict) //deleteDict = {"calendar_name":[item1.entryID,item2.entryID,item3.entryID],"calendar2_name":[item1.entryID,item2.entryID]} the number represents how many items to delete.
+            deleteLoading.value=true;
+                watchEnder = watch(progressPercentage, (newVal, oldVal) => {
+            if(deleteProgress.value==deleteTotal.value) {
+                console.log("Delete function complete")
+                deleteLoading.value = false;
+                watchEnder();
+                // maybe add how long it takes for add function to complete? so like took x time to add styleOfCause to list[calendars]
+            }
+        },);
             for (let i = 0; i < deleteDictKeys.length; i++){
                 deleteTotal.value+=e.deleteDict[deleteDictKeys[i]].length;
+                displayDeleteDict.value.push({"name":deleteDictKeys[i],"value":e.deleteDict[deleteDictKeys[i]].length,"key":i})
                 // display how many events found for each calendar here. (maybe update text file and reflect it on web app)
                 addEvent("Found " + e.deleteDict[deleteDictKeys[i]].length.toString() + " in " + deleteDictKeys[i]);        
             }
@@ -139,14 +141,24 @@ const toggle = (event) => {
                     <Transition>
                         <div v-if="!loading"><ProgressBar :value="progressPercentage" :class="'custom-progress-bar'"></ProgressBar></div>
                     </Transition>
-
+                    
                     <Transition>
                         <div class="mt-3" v-if="loading">Progress: <i class="pi pi-spin pi-spinner"></i></div>
                     </Transition>
+                    
 
                     <!-- display for how many events are being deleted from whom -->
                     <h2>Deleting:</h2>
-                    <p>{ number } from { calendar }...</p>
+                    <Transition v-if="!deleteLoading">
+                        <p>{ number } from { calendar }...</p>
+                    </Transition>
+                    <Transition v-if="deleteLoading">
+                        <div>
+                            <div v-for="entry of displayDeleteDict" :key="entry.key" class="flex items-center gap-2">
+                                <p :for="entry.key">{ {{ entry.value }} } from { {{ entry.name }} }</p>
+                            </div>
+                        </div>
+                    </Transition>
                 </div>
             </div>
 
