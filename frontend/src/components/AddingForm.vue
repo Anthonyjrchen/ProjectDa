@@ -188,7 +188,7 @@ function formSubmit(e){
             </div> 
         </div>
         
-        <Button :disabled="addLoading" class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</Button>
+        <Button :disabled="addLoading" class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3 disabled:bg-azalea disabled:cursor-not-allowed" type="submit">Add item</Button>
         <div class="mt-2">Progress: {{ addProgress }}/{{ addTotal }}</div>
         <ProgressBar :value="progressPercentage" :class="'custom-progress-bar'"></ProgressBar> <!--progressPercentage-->
     </form>
@@ -218,6 +218,7 @@ h2 {
     width: 186px;
     transition: width 0.005s ease; /* Smooth transition */
 }
+
 
 
 

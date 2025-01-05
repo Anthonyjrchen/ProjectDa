@@ -4,6 +4,8 @@ import Textarea from 'primevue/textarea';
 import $ from 'jquery';
 import Button from 'primevue/button';
 import { ButtonStyle } from 'primevue';
+import { useConfirm } from "primevue/useconfirm";
+import { useToast } from "primevue/usetoast";
 const holidaysText = ref('');
 const ignoredCalendersText = ref('');
 const lawyerCalendarsText = ref('');
@@ -11,6 +13,33 @@ const holidaysTextOld = ref('');
 const ignoredCalendersTextOld = ref('');
 const lawyerCalendarsTextOld = ref('');
 const isSaveButtonDisabled = ref(true);
+const confirm = useConfirm();
+const toast = useToast();
+
+const confirm1 = (event) => {
+    confirm.require({
+        target: event.currentTarget,
+        message: 'Are you sure you want to proceed?',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Save'
+        },
+        accept: () => {
+            saveTexts()
+            toast.add({ severity: 'info', summary: 'Saved', detail: 'Changes saved.', life: 3000 });
+        },
+        reject: () => {
+            //doesn't save texts
+            toast.add({ severity: 'error', summary: 'Cancelled', detail: 'Did not save changes.', life: 3000 });
+        }
+    });
+};
+
 function processTexts(e) {
     holidaysText.value = e.holidays
     ignoredCalendersText.value = e.ignoredCalendars
@@ -97,8 +126,10 @@ function saveTexts() {
         </div>
     </div>
     <div class="buttonWrap">
-        <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea" @click="resetTexts">Cancel</button>
-        <Button :disabled="isSaveButtonDisabled" id="saveButton" class="border-[1px] !border-sweet-pink px-3 py-1.5 rounded-md !bg-azalea" @click="saveTexts">Save Changes</Button>
+        <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea" @click="resetTexts">Reset Changes</button>
+        <Toast />
+        <ConfirmDialog class="pt-5"></ConfirmDialog>
+        <Button :disabled="isSaveButtonDisabled" id="saveButton" class="border-[1px] !border-sweet-pink px-3 py-1.5 rounded-md !bg-azalea" @click="confirm1($event)">Save Changes</Button>
     </div>
 </template>
 

@@ -131,7 +131,7 @@ const toggle = (event) => {
                     <input type="text" name="courtFile" v-model="courtFile" class="p-1.5 !border-[2px] !border-brink-pink text-dark-gray !rounded-md focus:outline-none focus:ring-1 focus:ring-white bg-rose-bud" required />
                 </div>
                 <div class="mt-3">
-                    <button :disabled="deleteLoading" class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea" type="submit">Delete</button>
+                    <button :disabled="deleteLoading" class="border-[1px] border-dark-white px-3 py-1.5 rounded-md hover:bg-azalea disabled:bg-azalea disabled:cursor-not-allowed" type="submit">Delete</button>
                     <Transition>
                         <div class="mt-2" v-if="!loading">Progress: {{ deleteProgress }}/{{ deleteTotal }}</div>
                     </Transition>
@@ -143,6 +143,10 @@ const toggle = (event) => {
                     <Transition>
                         <div class="mt-3" v-if="loading">Progress: <i class="pi pi-spin pi-spinner"></i></div>
                     </Transition>
+
+                    <!-- display for how many events are being deleted from whom -->
+                    <h2>Deleting:</h2>
+                    <p>{ number } from { calendar }...</p>
                 </div>
             </div>
 
@@ -205,5 +209,8 @@ h2 {
     transition: width 0.05s ease; /* Smooth transition */
 }
 
+p {
+    color: #fadbe1;
+}
 
 </style>
