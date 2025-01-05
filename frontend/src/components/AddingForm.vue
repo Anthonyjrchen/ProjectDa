@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import DatePicker from 'primevue/datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import Checkbox from 'primevue/checkbox';
-import $, { event } from 'jquery';
+import $ from 'jquery';
 
 const date = ref(null);
 const jmlFile = ref('');
@@ -95,7 +95,7 @@ function formSubmit(e){
                         }
                     })
                     if(!lawyerCalendars.includes(e.validCalendars[j])){
-                        console.log(e.validCalendars[j] + " is a lawyer.")
+                        console.log(e.validCalendars[j] + " is not a lawyer.")
                         for (let x = 1; x < eventDates.length; x++) {
                             $.ajax({
                                 url: 'http://127.0.0.1:8000/add/reminder',
@@ -116,11 +116,24 @@ function formSubmit(e){
                                 }
                             })
                         }
+                    } else {
+                        console.log(e.validCalendars[j] + " is not a lawyer.")
                     }
                 } 
             }
         }
     });
+
+
+    // var interval = setInterval(() => {
+    //     randomFunction();
+    // }, (200));
+    // function randomFunction(){
+    //     progressPercentage.value++;
+    //     if(progressPercentage>=100) {
+    //         clearInterval(interval)
+    //     }
+    // }
 };
 </script>
 
@@ -142,7 +155,7 @@ function formSubmit(e){
         
         <h2>Trial Date</h2>
         <!-- !!! figure out how to edit styles (primevue specific editing?) -->
-        <DatePicker v-model="date" class="datepicker" name="date" fluid iconDisplay="input" dateFormat="dd/mm/yy" input-class="!border-[2px] !border-brink-pink !bg-rose-bud !text-dark-gray" calendar-class="rounded"></DatePicker>
+        <DatePicker v-model="date" class="datepicker" name="date" fluid iconDisplay="input" dateFormat="dd/mm/yy" input-class="!border-[2px] !border-brink-pink !bg-rose-bud !text-dark-gray" calendar-class="rounded" @update:model-value="(value) => $emit('dateChanged', value)"></DatePicker>
 
         <h2 class="mt-2">Choose which calendar/s</h2>
         <div class="card flex justify-left">
@@ -156,7 +169,7 @@ function formSubmit(e){
         
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea mt-3" type="submit">Add item</button>
         <div class="mt-2">Progress: {{ addProgress }}/{{ addTotal }}</div>
-        <ProgressBar :value="progressPercentage" :class="'custom-progress-bar'"></ProgressBar>
+        <ProgressBar :value="progressPercentage" :class="'custom-progress-bar'"></ProgressBar> <!--progressPercentage-->
     </form>
 </template>
 
@@ -172,12 +185,19 @@ h2 {
     height: 40px;
 }
 
-.p-progressbar-determinate .p-progressbar-value-animate {
-    transition: width 1s ease-in-out;
+.p-progressbar {
+    border: 2px solid #fb607f !important;
+    background-color: #272526 !important;
+    width: 186px;
+    height: 25px;
 }
 
-.custom-progress-bar {
-    background-color: #fab0ba !important;
+.p-progressbar-value {
+    background-color: #fb607f !important;
+    width: 186px;
+    transition: width 0.005s ease; /* Smooth transition */
 }
+
+
 
 </style>

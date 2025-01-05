@@ -2,3 +2,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* .card {
+    background: var(--card-bg);
+    border: var(--card-border);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+} */
+
+:root {
+    --progress-bar-color: #fb607f;
+    --p-textarea-focus-border-color: #fb607f;
+  }
+  
+  .custom-progress-bar .p-progressbar-value {
+    background-color: var(--progress-bar-color) !important;
+  }
+
+  
