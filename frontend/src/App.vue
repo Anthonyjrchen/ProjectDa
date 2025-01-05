@@ -49,17 +49,23 @@ import logo from "./assets/images/DAhandlerTransparent.png"
                     </li>
                     <div class="divider"></div>
                     <li>
-                      <RouterLink to="/team" v-ripple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
-                        <i class="pi pi-users mr-2 custom-icon"></i>
-                        <span class="font-medium text-light-pink">Team</span>
-                      </RouterLink>
-                    </li>
-                    <div class="divider"></div>
-                    <li>
                       <RouterLink to="/settings" v-ripple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
                           <i class="pi pi-cog mr-2 custom-icon"></i>
                           <!-- insert adding logo here-->
                           <span class="font-medium text-light-pink">Settings</span>
+                      </RouterLink>
+                    </li>
+                    <div class="divider"></div><li>
+                      <RouterLink to="/log" v-ripple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
+                        <i class="pi pi-history mr-2 custom-icon"></i>
+                        <span class="font-medium text-light-pink">Log</span>
+                      </RouterLink>
+                    </li>
+                    <div class="divider"></div>
+                    <li>
+                      <RouterLink to="/team" v-ripple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
+                        <i class="pi pi-users mr-2 custom-icon"></i>
+                        <span class="font-medium text-light-pink">Team</span>
                       </RouterLink>
                     </li>
                     <div class="divider"></div>

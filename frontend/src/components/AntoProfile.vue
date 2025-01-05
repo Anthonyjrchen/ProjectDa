@@ -125,4 +125,13 @@ a {
 button:hover, a:hover {
     opacity: 0.7;
 }
+
+textarea {
+    padding: 10px; /* Adjust the padding if needed */
+    line-height: 1.5; /* Adjust line height */
+    vertical-align: top; /* Align text to the top */
+    resize: none; /* To prevent resizing */
+    width: 100%;
+    height: 100%;
+}
 </style>

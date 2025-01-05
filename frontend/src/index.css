@@ -13,11 +13,15 @@
 
 :root {
     --progress-bar-color: #fb607f;
-    --p-textarea-focus-border-color: #fb607f;
+    --textarea-focus-border-color: #fb607f;	
+    --textarea-border-color: black;
   }
   
   .custom-progress-bar .p-progressbar-value {
     background-color: var(--progress-bar-color) !important;
   }
 
-  
+  .p-textarea {
+    border: 1px solid var(--textarea-border-color) !important;
+  }
+
