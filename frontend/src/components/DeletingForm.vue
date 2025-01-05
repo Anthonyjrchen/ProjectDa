@@ -60,6 +60,7 @@ const progressPercentage = ref(0);
 let watchEnder;
 const displayDeleteDict = ref([]);
 function formSubmit(e){
+    var start = new Date().getTime();
     deleteProgress.value = 0;
     deleteTotal.value = 0;
     progressPercentage.value = 0;
@@ -83,7 +84,9 @@ function formSubmit(e){
                 console.log("Delete function complete")
                 deleteLoading.value = false;
                 watchEnder();
-                // maybe add how long it takes for add function to complete? so like took x time to add styleOfCause to list[calendars]
+                let funcDuration = ((new Date().getTime()- start) / 1000).toFixed(1);
+                console.log("Add function took: " + funcDuration);
+                addEvent("Deleting (" + courtFile.value + ") events from " + e.validCalendars + " took " + funcDuration + " seconds");
             }
         },);
             for (let i = 0; i < deleteDictKeys.length; i++){

@@ -17,6 +17,7 @@ let calendars = ref([{"name":"Backend Not Running Yet.", key:"test"}]);
 let watchEnder;
 const selectedCalendars = ref(["Calendar(jneria@jml.ca)"]);
 let lawyerCalendars = [];
+
 $.ajax({
     url:'http://localhost:8000/calendars',
     type:'GET',
@@ -45,6 +46,7 @@ function addEvent(msg) {
 }
 
 function formSubmit(e){
+    var start = new Date().getTime();
     const formattedDate = date.value.toISOString().split('T')[0];
     e.preventDefault();
     addProgress.value=0;
@@ -74,7 +76,9 @@ function formSubmit(e){
                     console.log("Adding function complete")
                     addLoading.value = false;
                     watchEnder();
-                    // maybe add how long it takes for add function to complete? so like took x time to add styleOfCause to list[calendars]
+                    let funcDuration = ((new Date().getTime()- start) / 1000).toFixed(1);
+                    console.log("Add function took: " + funcDuration);
+                    addEvent("Adding (" + formattedDate + ") to " + e.validCalendars + " took " + funcDuration + " seconds");
                 }
             },);
             e.validCalendars.forEach(function (e){
@@ -144,17 +148,6 @@ function formSubmit(e){
             }
         }
     });
-
-
-    // var interval = setInterval(() => {
-    //     randomFunction();
-    // }, (200));
-    // function randomFunction(){
-    //     progressPercentage.value++;
-    //     if(progressPercentage>=100) {
-    //         clearInterval(interval)
-    //     }
-    // }
 };
 </script>
 

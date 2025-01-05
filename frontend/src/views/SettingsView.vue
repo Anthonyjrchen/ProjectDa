@@ -90,7 +90,6 @@ function saveTexts() {
             updateTexts();
         }
     });
-    // console.log(ignoredCalendersText.value + " :::: and the type is " + typeof(ignoredCalendersText.value))
 }
 
 </script>
