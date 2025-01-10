@@ -128,7 +128,7 @@ function saveTexts() {
         <button class="border-[1px] border-sweet-pink px-3 py-1.5 rounded-md hover:bg-azalea" @click="resetTexts">Reset Changes</button>
         <Toast />
         <ConfirmDialog class="pt-5"></ConfirmDialog>
-        <Button :disabled="isSaveButtonDisabled" id="saveButton" class="border-[1px] !border-sweet-pink px-3 py-1.5 rounded-md !bg-azalea" @click="confirm1($event)">Save Changes</Button>
+        <Button :disabled="isSaveButtonDisabled" id="saveButton" class="border-[1px] !border-sweet-pink px-3 py-1.5 rounded-md !bg-azalea !text-brink-pink" @click="confirm1($event)">Save Changes</Button>
     </div>
 </template>
 

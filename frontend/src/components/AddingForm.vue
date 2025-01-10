@@ -18,17 +18,28 @@ let watchEnder;
 const selectedCalendars = ref(["Calendar(jneria@jml.ca)"]);
 let lawyerCalendars = [];
 
-$.ajax({
-    url:'http://localhost:8000/calendars',
-    type:'GET',
-    success:function(val) {
-        calendars.value = [];
-        for (let i = 0; i < val.calendarList.length; i++) {
-            calendars.value.push({name:val.calendarList[i], key:i})
+function loadCalendars() {
+    $.ajax({
+        url:'http://localhost:8000/',
+        type:'GET',
+        success:function() {
+            calendars.value = [{"name":"Retrieving calendars...", key:"test"}]
         }
-        console.log(calendars.value)
-    }
-})
+    })
+    
+    $.ajax({
+        url:'http://localhost:8000/calendars',
+        type:'GET',
+        success:function(val) {
+            calendars.value = [];
+            for (let i = 0; i < val.calendarList.length; i++) {
+                calendars.value.push({name:val.calendarList[i], key:i})
+            }
+            console.log(calendars.value)
+        }
+    })
+}
+loadCalendars();
 
 function addEvent(msg) {
     $.ajax({

@@ -19,24 +19,37 @@ $.ajax({
         console.log("Updated lawyer calendars...")
     }
 })
-$.ajax({
-    url:'http://localhost:8000/calendars',
-    type:'GET',
-    success:function(val) {
-        deleteCalendars.value = [];
-        for (let i = 0; i < val.calendarList.length; i++) {
-            if (lawyerCalendars.value.includes(val.calendarList[i])){
-                deleteCalendars.value.push({name:val.calendarList[i], key:i+1})
-            } else {
-                if(val.calendarList[i]!="Calendar(jneria@jml.ca)"){
-                    deleteCalendarsRemaining.value.push({name:val.calendarList[i], key:i+1})
-                }
-            }
-            // if (val[i]==) if val[i](calendarname) == Jana's calendar, add to selectedDeleteCalendars and check her checkbox.
+
+function loadCalendars() {
+    $.ajax({
+        url:'http://localhost:8000/',
+        type:'GET',
+        success:function() {
+            deleteCalendars.value = [{"name":"Retrieving calendars...", key:"test"}]
         }
-    console.log(deleteCalendars.value)
-    }
-})
+    })
+    
+    $.ajax({
+        url:'http://localhost:8000/calendars',
+        type:'GET',
+        success:function(val) {
+            deleteCalendars.value = [];
+            for (let i = 0; i < val.calendarList.length; i++) {
+                if (lawyerCalendars.value.includes(val.calendarList[i])){
+                    deleteCalendars.value.push({name:val.calendarList[i], key:i+1})
+                } else {
+                    if(val.calendarList[i]!="Calendar(jneria@jml.ca)"){
+                        deleteCalendarsRemaining.value.push({name:val.calendarList[i], key:i+1})
+                    }
+                }
+                // if (val[i]==) if val[i](calendarname) == Jana's calendar, add to selectedDeleteCalendars and check her checkbox.
+            }
+        console.log(deleteCalendars.value)
+        }
+    })
+
+}
+loadCalendars();
 
 function addEvent(msg) {
     $.ajax({
