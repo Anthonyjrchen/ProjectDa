@@ -26,7 +26,7 @@ $.ajax({
         for (let i = 0; i < val.calendarList.length; i++) {
             calendars.value.push({name:val.calendarList[i], key:i})
         }
-        console.log(val)
+        console.log(calendars.value)
     }
 })
 
@@ -78,7 +78,7 @@ function formSubmit(e){
                     watchEnder();
                     let funcDuration = ((new Date().getTime()- start) / 1000).toFixed(1);
                     console.log("Add function took: " + funcDuration);
-                    addEvent("Adding (" + formattedDate + ") to " + e.validCalendars + " took " + funcDuration + " seconds");
+                    addEvent("Adding courtFileNum: " + courtFile.value+"(" + formattedDate + ") to " + e.validCalendars + " took " + funcDuration + " seconds");
                 }
             },);
             e.validCalendars.forEach(function (e){
@@ -91,7 +91,7 @@ function formSubmit(e){
             const eventDictKeys = Object.keys(e.eventDict);
             console.log(e.eventDict);
             for (let j = 0; j < e.validCalendars.length; j++) {
-                addEvent("Added due dates (and reminder dates) for " + styleOfCause.value + "(" + formattedDate + ") for the calendar: " + e.validCalendars[j])
+                addEvent("Added due dates (and reminder dates) for " + styleOfCause.value + " [courtFileNum: " + courtFile.value + "(" + formattedDate + ")] for the calendar: " + e.validCalendars[j])
                 for (let i = 0; i < eventDictKeys.length; i++) {
                     
                     var eventDates = e.eventDict[eventDictKeys[i]];

@@ -85,7 +85,7 @@ function formSubmit(e){
                 deleteLoading.value = false;
                 watchEnder();
                 let funcDuration = ((new Date().getTime()- start) / 1000).toFixed(1);
-                console.log("Add function took: " + funcDuration);
+                console.log("Delete function took: " + funcDuration);
                 addEvent("Deleting (" + courtFile.value + ") events from " + e.validCalendars + " took " + funcDuration + " seconds");
             }
         },);
@@ -95,9 +95,9 @@ function formSubmit(e){
                 // display how many events found for each calendar here. (maybe update text file and reflect it on web app)
                 addEvent("Found " + e.deleteDict[deleteDictKeys[i]].length.toString() + " in " + deleteDictKeys[i]);        
             }
-
+            if (deleteTotal.value==0) deleteLoading.value=false;
             for (let i = 0; i < deleteDictKeys.length; i++){
-                addEvent("Removed events for " + courtFile.value + "for the calendar: " + deleteDictKeys[i]);
+                
                 for (var j = e.deleteDict[deleteDictKeys[i]].length-1; j >= 0 ; j--){
                     $.ajax({
                         url: 'http://127.0.0.1:8000/delete',
@@ -114,6 +114,7 @@ function formSubmit(e){
                     });
                 }
             }
+            addEvent("Removed events with courtFileNum: " + courtFile.value + " for the calendars: " + deleteDictKeys);
         }
     });
 };

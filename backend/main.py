@@ -10,6 +10,7 @@ import uvicorn
 import smtplib
 from email.mime.text import MIMEText
 import datetime
+import pythoncom
 
 app = FastAPI()
 
@@ -29,62 +30,132 @@ app.add_middleware(
     allow_headers=["*"],
 )
 print("Updated server")
+# calendarFolder = namespace.GetDefaultFolder(9)
 outlook = client.Dispatch("Outlook.Application")
 namespace = outlook.GetNamespace("MAPI")
-calendarFolder = namespace.GetDefaultFolder(9)
-outlook_navpane = client.Dispatch('Outlook.Application').ActiveExplorer().NavigationPane
-outlook_navmod = outlook_navpane.Modules.getNavigationModule(1)
 calendarList = []
 calendarDict = {}
 storeIdDict = {}
+eventDict = {}
 progress = 0
 with open("recipientList.txt", 'w') as f:
     f.write("")
     f.close()
-ignoredCalendars = open("ignoredCalendars.txt","r").read().split("\n")
-lawyerCalendars = open("lawyerCalendars.txt","r").read().split("\n")
 
+with open("ignoredCalendars.txt","r") as f:
+    ignoredCalendars = f.read().split("\n")
 
-# Iterate through NavigationGroups and NavigationFolders
-for group in outlook_navmod.NavigationGroups:
-    # group.Name is My Calendars, All Group Calendars, etc.
-    if group.Name != "Shared Calendars":
-        for folder in group.NavigationFolders:
-            if folder.DisplayName not in ignoredCalendars:
-                calendarName = str(folder.Folder.FolderPath).split("\\")[-1]+"("+str(folder.Folder.FolderPath).split("\\")[2]+")"
-                storeIdDict[calendarName] = folder.Folder.StoreID
-                calendarList.append(calendarName)
+with open("lawyerCalendars.txt","r") as f:
+    lawyerCalendars = f.read().split("\n")
+
+def initCalendars():
+    pythoncom.CoInitialize()
+    try:
+        outlook = client.Dispatch("Outlook.Application")
+        namespace = outlook.GetNamespace("MAPI")
+        with open("ignoredCalendars.txt","r") as f:
+            tempIgnoredCalendars = f.read().split("\n") 
+        print("Updated ignoredCalendars list: " + str(tempIgnoredCalendars))
+        tempCalendarList = []
+        tempCalendarDict = {}
+        outlook_navpane = client.Dispatch('Outlook.Application').ActiveExplorer().NavigationPane
+        outlook_navmod = outlook_navpane.Modules.getNavigationModule(1)
+
+        with open("recipientList.txt", 'w') as f:
+            f.write('')
+
+        # Iterate through NavigationGroups and NavigationFolders
+        for group in outlook_navmod.NavigationGroups:
+            # group.Name is My Calendars, All Group Calendars, etc.
+            if group.Name != "Shared Calendars":
+                for folder in group.NavigationFolders:
+                    if folder.DisplayName not in tempIgnoredCalendars and folder.DisplayName not in tempCalendarList:
+                        print("Adding " + folder.DisplayName)
+                        try:
+                            calendarName = str(folder.Folder.FolderPath).split("\\")[-1]+"("+str(folder.Folder.FolderPath).split("\\")[2]+")"
+                        except:
+                            print("Error found on: " + folder.DisplayName + " if your calendar list loaded fine please ignore this message.")
+                        
+                        storeIdDict[calendarName] = folder.Folder.StoreID
+                        tempCalendarList.append(calendarName)
+                        try:
+                            tempCalendarDict[calendarName] = namespace.GetFolderFromID(folder.Folder.EntryID)
+                        except:
+                            print("Could not find folder for " + folder.DisplayName)
+            else:
+                #try using GetSharedFolderFromID
+                #Add to recipient list
+                for folder in group.NavigationFolders:
+                    if folder.DisplayName not in tempIgnoredCalendars and folder.DisplayName not in tempCalendarList:
+                        if " - " in folder.DisplayName:
+                            tempCalendarList.append(folder.DisplayName.split(" - ")[1])
+                            storeIdDict[folder.DisplayName.split(" - ")[1]] = folder.Folder.StoreID
+                        else:
+                            tempCalendarList.append(folder.DisplayName)
+                            storeIdDict[folder.DisplayName] = folder.Folder.StoreID
+
+                        with open("recipientList.txt", 'a+') as f:
+                                    if " - " in folder.DisplayName:
+                                        f.write(folder.DisplayName.split(" - ")[1]+"\n")
+                                    else:
+                                        f.write(folder.DisplayName + "\n")
+                                    f.close()
+        recipients = open("recipientList.txt","r").read().split("\n")
+        for name in recipients:
+            recipient = namespace.CreateRecipient(name)
+            if recipient.Resolve():
                 try:
-                    calendarDict[calendarName] = namespace.GetFolderFromID(folder.Folder.EntryID)
+                    tempCalendarDict[name] = namespace.GetSharedDefaultFolder(recipient,9)
                 except:
-                    print("Could not find folder for " + folder.DisplayName)
-    else:
-        #try using GetSharedFolderFromID
-        #Add to recipient list
-        for folder in group.NavigationFolders:
-            if folder.DisplayName not in ignoredCalendars:
-                if " - " in folder.DisplayName:
-                    calendarList.append(folder.DisplayName.split(" - ")[1])
-                    storeIdDict[folder.DisplayName.split(" - ")[1]] = folder.Folder.StoreID
-                else:
-                    calendarList.append(folder.DisplayName)
-                    storeIdDict[folder.DisplayName] = folder.Folder.StoreID
+                    print("Finished loading calendars: " + str(tempCalendarDict.keys()))
+    finally:
+        pythoncom.CoUninitialize()
+        return tempCalendarDict
+
+# # Iterate through NavigationGroups and NavigationFolders
+# for group in outlook_navmod.NavigationGroups:
+#     # group.Name is My Calendars, All Group Calendars, etc.
+#     if group.Name != "Shared Calendars":
+#         for folder in group.NavigationFolders:
+#             if folder.DisplayName not in ignoredCalendars and folder.DisplayName not in calendarList:
+#                 try:
+#                     calendarName = str(folder.Folder.FolderPath).split("\\")[-1]+"("+str(folder.Folder.FolderPath).split("\\")[2]+")"
+#                 except:
+#                     print("Error found on: " + folder.DisplayName + " if your calendar list loaded fine please ignore this message.")
                 
-                with open("recipientList.txt", 'a+') as f:
-                            if " - " in folder.DisplayName:
-                                f.write(folder.DisplayName.split(" - ")[1]+"\n")
-                            else:
-                                f.write(folder.DisplayName + "\n")
-                            f.close()
-recipients = open("recipientList.txt","r").read().split("\n")
-for name in recipients:
-    recipient = namespace.CreateRecipient(name)
-    if recipient.Resolve():
-        try:
-            calendarDict[name] = namespace.GetSharedDefaultFolder(recipient,9)
-        except:
-            print("Couldn't resolve recipient: " + name)
-eventDict = {}
+#                 storeIdDict[calendarName] = folder.Folder.StoreID
+#                 calendarList.append(calendarName)
+#                 try:
+#                     calendarDict[calendarName] = namespace.GetFolderFromID(folder.Folder.EntryID)
+#                 except:
+#                     print("Could not find folder for " + folder.DisplayName)
+#     else:
+#         #try using GetSharedFolderFromID
+#         #Add to recipient list
+#         for folder in group.NavigationFolders:
+#             if folder.DisplayName not in ignoredCalendars and folder.DisplayName not in calendarList:
+#                 if " - " in folder.DisplayName:
+#                     calendarList.append(folder.DisplayName.split(" - ")[1])
+#                     storeIdDict[folder.DisplayName.split(" - ")[1]] = folder.Folder.StoreID
+#                 else:
+#                     calendarList.append(folder.DisplayName)
+#                     storeIdDict[folder.DisplayName] = folder.Folder.StoreID
+                
+#                 with open("recipientList.txt", 'a+') as f:
+#                             if " - " in folder.DisplayName:
+#                                 f.write(folder.DisplayName.split(" - ")[1]+"\n")
+#                             else:
+#                                 f.write(folder.DisplayName + "\n")
+#                             f.close()
+# recipients = open("recipientList.txt","r").read().split("\n")
+# for name in recipients:
+#     recipient = namespace.CreateRecipient(name)
+#     if recipient.Resolve():
+#         try:
+#             calendarDict[name] = namespace.GetSharedDefaultFolder(recipient,9)
+#         except:
+#             print("Finished loading calendars: " + str(calendarDict.keys()))
+
 
 @app.get("/")
 async def root():
@@ -224,10 +295,8 @@ class trueDelete(BaseModel):
 
 @app.post("/delete")
 async def trueDelete(trueDelete:trueDelete):
-    items = calendarDict[trueDelete.calendar].Items
     # items.Item(int(trueDelete.curItem)).delete()
     # .GetItemFromID(items.Item(int(trueDelete.curItem)).EntryID).subject
-    targetCalendar = calendarDict[trueDelete.calendar]
     namespace.GetItemFromID(trueDelete.curItem,storeIdDict[trueDelete.calendar]).delete()
     return
 
@@ -237,7 +306,9 @@ def getStoreIDs():
 
 @app.get("/calendars")
 def getCalendars():
-    return {"calendarList":calendarList}
+    calendarDict = initCalendars()
+    print("Sending calendarDict.keys(): " + str(list(calendarDict.keys())))
+    return {"calendarList":list(calendarDict.keys())}
 
 '''
 CALCULATOR FUNCTION
