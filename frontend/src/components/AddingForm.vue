@@ -35,7 +35,8 @@ function loadCalendars() {
             for (let i = 0; i < val.calendarList.length; i++) {
                 calendars.value.push({name:val.calendarList[i], key:i})
             }
-            console.log(calendars.value)
+            
+            console.log("Adding form's calendars's value is: " + calendars.value);
         }
     })
 }
@@ -72,6 +73,108 @@ function formSubmit(e){
             console.log("Updated lawyer calendars...")
         }
     })
+    // $.ajax({
+    //     url:"http://127.0.0.1:8000/calendars/init",
+    //     type:"get",
+    //     async:false,
+    //     succes:function(e) {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/initiateAdd',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    date: formattedDate,
+                    calendars: selectedCalendars.value,
+                }),
+                success:function(e){
+                        console.log("Response from /initiateAdd:", e);
+                        if (!e.validCalendars) {
+                            console.error("validCalendars is undefined.");
+                        }
+                        addLoading.value = true;
+                        watchEnder = watch(progressPercentage, (newVal, oldVal) => {
+                            if(addProgress.value==addTotal.value) {
+                                console.log("Adding function complete")
+                                addLoading.value = false;
+                                watchEnder();
+                                let funcDuration = ((new Date().getTime()- start) / 1000).toFixed(1);
+                                console.log("Add function took: " + funcDuration);
+                                addEvent("Adding courtFileNum: " + courtFile.value+"(" + formattedDate + ") to " + e.validCalendars + " took " + funcDuration + " seconds");
+                            }
+                        },);
+                        e.validCalendars.forEach(function (e){
+                            if(lawyerCalendars.includes(e)){
+                                addTotal.value+=14
+                            } else {
+                                addTotal.value+=64
+                            }
+                        })
+                        const eventDictKeys = Object.keys(e.eventDict);
+                        console.log(e.eventDict);
+                        for (let j = 0; j < e.validCalendars.length; j++) {
+                            addEvent("Added due dates (and reminder dates) for " + styleOfCause.value + " [courtFileNum: " + courtFile.value + "(" + formattedDate + ")] for the calendar: " + e.validCalendars[j])
+                            for (let i = 0; i < eventDictKeys.length; i++) {
+                                
+                                var eventDates = e.eventDict[eventDictKeys[i]];
+                                let plaintiffDefendant = eventDictKeys[i].substring(eventDictKeys[i].length - 3)=="(P)" || eventDictKeys[i].substring(eventDictKeys[i].length - 3)=="(D)"
+                                let formName = eventDictKeys[i];
+                                if (plaintiffDefendant) {
+                                    formName  = eventDictKeys[i].substring(0,eventDictKeys[i].length-3)
+                                }
+                                $.ajax({
+                                    url: 'http://127.0.0.1:8000/add',
+                                    type: 'post',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        targetFolder: e.validCalendars[j],
+                                        courtFileNum: courtFile.value,
+                                        jmlFileNum: jmlFile.value,
+                                        styleOfCause: styleOfCause.value,
+                                        eventDate:eventDates[0],
+                                        formName:formName,
+                                        plaintiffDefendant:plaintiffDefendant,
+                                    }),
+                                    success(e){
+                                        
+                                        addProgress.value++;
+                                        progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
+                                    }
+                                })
+                                if(!lawyerCalendars.includes(e.validCalendars[j])){
+                                    console.log(e.validCalendars[j] + " is not a lawyer.")
+                                    for (let x = 1; x < eventDates.length; x++) {
+                                        $.ajax({
+                                            url: 'http://127.0.0.1:8000/add/reminder',
+                                            type: 'post',
+                                            contentType: 'application/json',
+                                            data: JSON.stringify({
+                                                targetFolder: e.validCalendars[j],
+                                                courtFileNum: courtFile.value,
+                                                jmlFileNum: jmlFile.value,
+                                                styleOfCause: styleOfCause.value,
+                                                eventDate: eventDates[x],
+                                                formName:formName,
+                                                plaintiffDefendant:plaintiffDefendant,
+                                            }),
+                                            success(e){
+                                                addProgress.value++;
+                                                progressPercentage.value = Math.round(addProgress.value/addTotal.value*100)
+                                            }
+                                        })
+                                    }
+                                } else {
+                                    console.log(e.validCalendars[j] + " is a lawyer.")
+                                }
+                            } 
+                        }
+                    }
+                });
+    //     }
+    // });
+    
+};
+
+function startAdd() {
     $.ajax({
        url: 'http://127.0.0.1:8000/initiateAdd',
        type: 'post',
@@ -81,6 +184,10 @@ function formSubmit(e){
            calendars: selectedCalendars.value,
        }),
       success:function(e){
+            console.log("Response from /initiateAdd:", e);
+            if (!e.validCalendars) {
+                console.error("validCalendars is undefined.");
+            }
             addLoading.value = true;
             watchEnder = watch(progressPercentage, (newVal, oldVal) => {
                 if(addProgress.value==addTotal.value) {
@@ -159,7 +266,7 @@ function formSubmit(e){
             }
         }
     });
-};
+}
 </script>
 
 <template>

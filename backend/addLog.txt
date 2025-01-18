@@ -1,0 +1,8 @@
+[01/17/2025-17:10:52] Added due dates (and reminder dates) for 0 [courtFileNum: 0(2025-01-01)] for the calendar: Test 1(jneria@jml.ca)
+[01/17/2025-18:22:11] Added due dates (and reminder dates) for anto vs dana [courtFileNum: S-000000(2029-09-22)] for the calendar: Test 1(jneria@jml.ca)
+[01/17/2025-18:25:03] Added due dates (and reminder dates) for anto vs dana [courtFileNum: S-000000(2029-09-22)] for the calendar: Test 1(jneria@jml.ca)
+[01/17/2025-18:25:43] Added due dates (and reminder dates) for vasdasdasda [courtFileNum: S-000000(2029-09-22)] for the calendar: Test 1(jneria@jml.ca)
+[01/17/2025-18:25:46] Adding courtFileNum: S-000000(2029-09-22) to Test 1(jneria@jml.ca) took 4.6 seconds
+[01/17/2025-21:35:54] Added due dates (and reminder dates) for DAhandler test event [courtFileNum: S-000000(2029-09-22)] for the calendar: Test 1(jneria@jml.ca)
+[01/17/2025-21:35:54] Added due dates (and reminder dates) for DAhandler test event [courtFileNum: S-000000(2029-09-22)] for the calendar: Calendar(Megaila Rose)
+[01/17/2025-21:36:13] Adding courtFileNum: S-000000(2029-09-22) to Test 1(jneria@jml.ca),Calendar(Megaila Rose) took 20.8 seconds

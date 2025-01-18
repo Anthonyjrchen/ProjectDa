@@ -80,57 +80,71 @@ function formSubmit(e){
     e.preventDefault();
     console.log("Delete events with caseFileNum: " + courtFile.value)
     loading.value = true;
-    $.ajax({
-        url: 'http://127.0.0.1:8000/initDelete',
-        type: 'post',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            caseNum: courtFile.value,
-            calendars: selectedDeleteCalendars.value,
-        }),
-        success:function(e){
-            loading.value = false;
-            let deleteDictKeys = Object.keys(e.deleteDict) //deleteDict = {"calendar_name":[item1.entryID,item2.entryID,item3.entryID],"calendar2_name":[item1.entryID,item2.entryID]} the number represents how many items to delete.
-            deleteLoading.value=true;
-                watchEnder = watch(progressPercentage, (newVal, oldVal) => {
-            if(deleteProgress.value==deleteTotal.value) {
-                console.log("Delete function complete")
-                deleteLoading.value = false;
-                watchEnder();
-                let funcDuration = ((new Date().getTime()- start) / 1000).toFixed(1);
-                console.log("Delete function took: " + funcDuration);
-                addEvent("Deleting (" + courtFile.value + ") events from " + e.validCalendars + " took " + funcDuration + " seconds");
-            }
-        },);
-            for (let i = 0; i < deleteDictKeys.length; i++){
-                deleteTotal.value+=e.deleteDict[deleteDictKeys[i]].length;
-                displayDeleteDict.value.push({"name":deleteDictKeys[i],"value":e.deleteDict[deleteDictKeys[i]].length,"key":i})
-                // display how many events found for each calendar here. (maybe update text file and reflect it on web app)
-                addEvent("Found " + e.deleteDict[deleteDictKeys[i]].length.toString() + " in " + deleteDictKeys[i]);        
-            }
-            if (deleteTotal.value==0) deleteLoading.value=false;
-            for (let i = 0; i < deleteDictKeys.length; i++){
-                
-                for (var j = e.deleteDict[deleteDictKeys[i]].length-1; j >= 0 ; j--){
-                    $.ajax({
-                        url: 'http://127.0.0.1:8000/delete',
-                        type: 'post',
-                        contentType: 'application/json',
-                        data: JSON.stringify({
-                            calendar: deleteDictKeys[i],
-                            curItem: e.deleteDict[deleteDictKeys[i]][j].toString(),
-                        }),
-                        success:function(e){
-                            deleteProgress.value+=1
-                            progressPercentage.value = Math.round(deleteProgress.value/deleteTotal.value*100)
+    // $.ajax({
+    //     url:"http://127.0.0.1:8000/calendars/init",
+    //     type:"get",
+    //     succes:function(e) {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/initDelete',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    caseNum: courtFile.value,
+                    calendars: selectedDeleteCalendars.value,
+                }),
+                success:function(e){
+                    loading.value = false;
+                    let deleteDictKeys = Object.keys(e.deleteDict) //deleteDict = {"calendar_name":[item1.entryID,item2.entryID,item3.entryID],"calendar2_name":[item1.entryID,item2.entryID]} the number represents how many items to delete.
+                    deleteLoading.value=true;
+                        watchEnder = watch(progressPercentage, (newVal, oldVal) => {
+                    if(deleteProgress.value==deleteTotal.value) {
+                        console.log("Delete function complete")
+                        deleteLoading.value = false;
+                        watchEnder();
+                        let funcDuration = ((new Date().getTime()- start) / 1000).toFixed(1);
+                        console.log("Delete function took: " + funcDuration);
+                        addEvent("Deleting (" + courtFile.value + ") events from " + e.validCalendars + " took " + funcDuration + " seconds");
+                    }
+                },);
+                    for (let i = 0; i < deleteDictKeys.length; i++){
+                        deleteTotal.value+=e.deleteDict[deleteDictKeys[i]].length;
+                        displayDeleteDict.value.push({"name":deleteDictKeys[i],"value":e.deleteDict[deleteDictKeys[i]].length,"key":i})
+                        // display how many events found for each calendar here. (maybe update text file and reflect it on web app)
+                        addEvent("Found " + e.deleteDict[deleteDictKeys[i]].length.toString() + " in " + deleteDictKeys[i]);        
+                    }
+                    if (deleteTotal.value==0) deleteLoading.value=false;
+                    for (let i = 0; i < deleteDictKeys.length; i++){
+                        
+                        for (var j = e.deleteDict[deleteDictKeys[i]].length-1; j >= 0 ; j--){
+                            $.ajax({
+                                url: 'http://127.0.0.1:8000/delete',
+                                type: 'post',
+                                contentType: 'application/json',
+                                data: JSON.stringify({
+                                    calendar: deleteDictKeys[i],
+                                    curItem: e.deleteDict[deleteDictKeys[i]][j].toString(),
+                                }),
+                                success:function(e){
+                                    deleteProgress.value+=1
+                                    progressPercentage.value = Math.round(deleteProgress.value/deleteTotal.value*100)
+                                }
+                            });
                         }
-                    });
+                    }
+                    addEvent("Removed events with courtFileNum: " + courtFile.value + " for the calendars: " + deleteDictKeys);
+                },
+                error:function(e) {
+                    alert("Received error: " + e + " please try again.");
                 }
-            }
-            addEvent("Removed events with courtFileNum: " + courtFile.value + " for the calendars: " + deleteDictKeys);
-        }
-    });
+            });
+    //     }
+    // });
 };
+
+function startDelete() {
+    
+}
+
 const op = ref();
 const toggle = (event) => {
     op.value.toggle(event);

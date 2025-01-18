@@ -11,6 +11,7 @@ import smtplib
 from email.mime.text import MIMEText
 import datetime
 import pythoncom
+import time
 
 app = FastAPI()
 
@@ -51,6 +52,7 @@ with open("lawyerCalendars.txt","r") as f:
 def initCalendars():
     pythoncom.CoInitialize()
     try:
+        global outlook, namespace
         outlook = client.Dispatch("Outlook.Application")
         namespace = outlook.GetNamespace("MAPI")
         with open("ignoredCalendars.txt","r") as f:
@@ -58,9 +60,11 @@ def initCalendars():
         print("Updated ignoredCalendars list: " + str(tempIgnoredCalendars))
         tempCalendarList = []
         tempCalendarDict = {}
-        outlook_navpane = client.Dispatch('Outlook.Application').ActiveExplorer().NavigationPane
+        print(namespace)
+        print(outlook)
+        outlook_navpane = outlook.ActiveExplorer().NavigationPane
         outlook_navmod = outlook_navpane.Modules.getNavigationModule(1)
-
+        
         with open("recipientList.txt", 'w') as f:
             f.write('')
 
@@ -70,11 +74,11 @@ def initCalendars():
             if group.Name != "Shared Calendars":
                 for folder in group.NavigationFolders:
                     if folder.DisplayName not in tempIgnoredCalendars and folder.DisplayName not in tempCalendarList:
-                        print("Adding " + folder.DisplayName)
                         try:
                             calendarName = str(folder.Folder.FolderPath).split("\\")[-1]+"("+str(folder.Folder.FolderPath).split("\\")[2]+")"
                         except:
-                            print("Error found on: " + folder.DisplayName + " if your calendar list loaded fine please ignore this message.")
+                            nothing = 0; #just a placeholder.
+                            # print("Error found on: " + folder.DisplayName + " if your calendar list loaded fine please ignore this message.")
                         
                         storeIdDict[calendarName] = folder.Folder.StoreID
                         tempCalendarList.append(calendarName)
@@ -108,8 +112,12 @@ def initCalendars():
                     tempCalendarDict[name] = namespace.GetSharedDefaultFolder(recipient,9)
                 except:
                     print("Finished loading calendars: " + str(tempCalendarDict.keys()))
+    except Exception as err:
+        print(err)
     finally:
-        pythoncom.CoUninitialize()
+        global calendarDict
+        calendarDict = tempCalendarDict
+        # pythoncom.CoUninitialize()
         return tempCalendarDict
 
 # # Iterate through NavigationGroups and NavigationFolders
@@ -172,7 +180,7 @@ async def add(userEvent:initData):
     validCalendars = []
     invalidCalendars = []
     for calendar in targetCalendars:
-        if calendar in calendarDict:
+        if calendar in initCalendars():
             validCalendars.append(calendar)
         else:
             invalidCalendars.append(calendar)
@@ -255,13 +263,22 @@ class initDeleteObject(BaseModel):
 
 @app.post("/initDelete")
 async def delete(initDeleteObject:initDeleteObject):
+    initCalendars()
+    global calendarDict
     t0 = time.time()
     deleteDict = {}
     caseNum ="DAhandler - " + str(initDeleteObject.caseNum.strip())
     for calendar in initDeleteObject.calendars:
         x = calendarDict[calendar]
-        items = x.Items
-        
+        for attempt in range(3):  # Retry 3 times
+            try:
+                items = x.Items
+                break
+            except AttributeError:
+                if attempt < 2:  # If not the last attempt
+                    time.sleep(1)  # Wait a moment before retrying
+                else:
+                    raise
         itemsToDelete = []
         for i in range(items.Count, 0, -1):
             if items.Item(i).location == caseNum:
@@ -306,9 +323,17 @@ def getStoreIDs():
 
 @app.get("/calendars")
 def getCalendars():
-    calendarDict = initCalendars()
+    initCalendars()
     print("Sending calendarDict.keys(): " + str(list(calendarDict.keys())))
+    calendarIDs = []
+    for calendar in list(calendarDict.keys()):
+        calendarIDs.append(calendarDict[calendar])
     return {"calendarList":list(calendarDict.keys())}
+
+@app.get("/calendars/init")
+async def initializeCalendars():
+    initCalendars()
+    return list(calendarDict.keys())
 
 '''
 CALCULATOR FUNCTION
@@ -418,3 +443,10 @@ def serve():
 
 if __name__ == "__main__":
     serve()
+
+'''
+test routes
+'''
+@app.get("/test/calendars")
+async def testGetCalendars():
+    return calendarDict
